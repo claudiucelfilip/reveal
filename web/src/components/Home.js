@@ -13,7 +13,7 @@ const Home = () => {
                 const posts = await smartContract.getPosts();
                 setPosts(posts);
             } catch (err) {
-                console.err(err);
+                console.error(err);
             }
         };
 

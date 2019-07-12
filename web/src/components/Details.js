@@ -21,7 +21,7 @@ const Details = ({ match, history }) => {
             }
             setPost(post);
         } catch (err) {
-            console.err(err);
+            console.error(err);
             history.push('/');
         }
         setLoading(false);

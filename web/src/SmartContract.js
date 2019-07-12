@@ -3,7 +3,7 @@ import JSBI from 'jsbi';
 const BigInt = JSBI.BigInt;
 
 const GAS_LIMIT = 1000000;
-const POST_CREATE_COST = 1000;
+const POST_CREATE_COST = 1000000;
 
 class SmartContract {
     static getInstance() {
@@ -20,6 +20,21 @@ class SmartContract {
             this.wallet = Wavelet.loadWalletFromPrivateKey(privateKey);
         }
         
+    }
+
+    async pollAccountUpdates(
+        id
+    ) {
+        return await this.client.pollAccounts(
+            {
+                onAccountUpdated: (data) => {
+                    if (data.event === 'balance_updated') {
+                        this.account.balance = data.balance.toString();
+                    }
+                }
+            },
+            { id }
+        );
     }
 
     listenForApplied = (tag, txId) => {
@@ -51,19 +66,26 @@ class SmartContract {
     }
 
     async init() {
-        this.contract = new Contract(this.client, '52646dc9cf7fd2fa155caf41fca9f911306cee864fdd47e1f7e10afffb34747a');
-        return await this.contract.init();
+        this.contract = new Contract(this.client, 'eec35aa907ca5f458ad3f7d9cf018b89b29bd5a4308fe1d0dfedcc56aa36e615');
+        await this.contract.init();
+
+        this.account = await this.client.getAccount(Buffer.from(this.wallet.publicKey).toString("hex"));
+        this.accountPoll = await this.pollAccountUpdates();
     }
 
     savePrivateKey(key) {
         localStorage.setItem('privateKey', key);
     }
 
-    removePrivateKey() {
+    logout() {
         localStorage.setItem('privateKey', '');
         this.wallet = null;
         this.client = null;
         this.contract = null;
+        if (this.accountPoll) {
+            this.accountPoll.close();
+        }
+        
     }
 
     parseResponse(response) {

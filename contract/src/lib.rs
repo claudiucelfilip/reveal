@@ -9,6 +9,8 @@ use serde::Serialize;
 use std::collections::HashMap;
 
 static mut COUNTER: u32 = 0;
+static CREATE_POST_FEE: u64 = 500000;
+
 fn generate_id() -> String {
     unsafe {
         COUNTER = COUNTER + 1;
@@ -95,8 +97,8 @@ impl Blog {
     }
 
     fn create_post(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
-        if params.amount < 2 {
-            return Err("2 PERLs are needed to Create a Post".into());
+        if params.amount < CREATE_POST_FEE {
+            return Err(format!("{} PERLs are needed to Create a Post", CREATE_POST_FEE).into());
         }
         
         let blog_owner_balance = match self.balances.get(&self.blog_owner) {
@@ -198,30 +200,6 @@ impl Blog {
         Ok(())
     }
 
-    // fn get_post(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
-    //     let post_id: String = params.read();
-    //     let post = self
-    //         .posts
-    //         .iter_mut()
-    //         .find(|post| post.id == *post_id)
-    //         .unwrap();
-    //     let rating = calculate_rating(post);
-
-    //     let post_excerpt = PostExcerpt {
-    //         id: post.id.clone(),
-    //         title: post.title.clone(),
-    //         public_text: post.public_text.clone(),
-    //         owner: post.owner,
-    //         created_at: post.created_at,
-    //         rating,
-    //         score: calculate_score(rating, post.created_at),
-    //     };
-
-    //     let post_json = serde_json::to_string(&post_excerpt).unwrap();
-    //     log(&post_json);
-
-    //     Ok(())
-    // }
 
     fn get_post_details(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
         let post_id: String = params.read();

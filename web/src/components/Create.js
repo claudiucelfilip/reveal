@@ -34,7 +34,7 @@ const Create = ({ history }) => {
             await smartContract.createPost(data);
             history.push('/');
         } catch (err) {
-            console.err(err);
+            console.error(err);
         }
         setLoading(false);
     }, []);
