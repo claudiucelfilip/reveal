@@ -51,7 +51,7 @@ class SmartContract {
     }
 
     async init() {
-        this.contract = new Contract(this.client, '1b512aaab8ddf0dca79de6e23db6855b952b55085ac83a9069087eac3476abb0');
+        this.contract = new Contract(this.client, '52646dc9cf7fd2fa155caf41fca9f911306cee864fdd47e1f7e10afffb34747a');
         return await this.contract.init();
     }
 
@@ -70,6 +70,11 @@ class SmartContract {
         const { logs } = response;
         const data = JSON.parse(logs[0]);
         console.log(data);
+        return data;
+    }
+
+    reloadMemory = async (data) => {
+        await this.contract.fetchAndPopulateMemoryPages();
         return data;
     }
 
@@ -112,7 +117,7 @@ class SmartContract {
         return await this.listenForApplied(
             TAG_TRANSFER,
             response.id
-        );
+        ).then(this.reloadMemory);
     }
 
     async cashOut() {
@@ -126,7 +131,7 @@ class SmartContract {
         return await this.listenForApplied(
             TAG_TRANSFER,
             response.id
-        );
+        ).then(this.reloadMemory);
     }
 
     async createPost(data) {
@@ -158,22 +163,29 @@ class SmartContract {
         return await this.listenForApplied(
             TAG_TRANSFER,
             response.id
-        );
+        ).then(this.reloadMemory);
     }
 
-    async vote(upVote) {
-        const funcName = upVote ? 'upvote_post' : 'downvote_post';
+    async votePost(id, upVote) {
         const response = await this.contract.call(
             this.wallet,
-            funcName,
+            'vote_post',
             BigInt(0),
-            BigInt(GAS_LIMIT)
+            BigInt(GAS_LIMIT),
+            {
+                type: 'string',
+                value: id
+            },
+            {
+                type: 'byte',
+                value: upVote ? 1 : 0
+            }
         );
 
         return await this.listenForApplied(
             TAG_TRANSFER,
             response.id
-        );
+        ).then(this.reloadMemory);
     }
 }
 
