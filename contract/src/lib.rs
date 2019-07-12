@@ -197,30 +197,30 @@ impl Blog {
         Ok(())
     }
 
-    fn get_post(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
-        let post_id: String = params.read();
-        let post = self
-            .posts
-            .iter_mut()
-            .find(|post| post.id == *post_id)
-            .unwrap();
-        let rating = calculate_rating(post);
+    // fn get_post(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+    //     let post_id: String = params.read();
+    //     let post = self
+    //         .posts
+    //         .iter_mut()
+    //         .find(|post| post.id == *post_id)
+    //         .unwrap();
+    //     let rating = calculate_rating(post);
 
-        let post_excerpt = PostExcerpt {
-            id: post.id.clone(),
-            title: post.title.clone(),
-            public_text: post.public_text.clone(),
-            owner: post.owner,
-            created_at: post.created_at,
-            rating,
-            score: calculate_score(rating, post.created_at),
-        };
+    //     let post_excerpt = PostExcerpt {
+    //         id: post.id.clone(),
+    //         title: post.title.clone(),
+    //         public_text: post.public_text.clone(),
+    //         owner: post.owner,
+    //         created_at: post.created_at,
+    //         rating,
+    //         score: calculate_score(rating, post.created_at),
+    //     };
 
-        let post_json = serde_json::to_string(&post_excerpt).unwrap();
-        log(&post_json);
+    //     let post_json = serde_json::to_string(&post_excerpt).unwrap();
+    //     log(&post_json);
 
-        Ok(())
-    }
+    //     Ok(())
+    // }
 
     fn get_post_details(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
         let post_id: String = params.read();
@@ -232,12 +232,18 @@ impl Blog {
             .unwrap();
         let rating = calculate_rating(post);
 
+        let mut show_private = false;
+
+        if post.paid_viewers.contains(&params.sender) {
+            show_private = true;
+        }
+
         let mut post_result = PostDetails {
             id: post.id.clone(),
             title: post.title.clone(),
             public_text: post.public_text.clone(),
             private_text: "".to_string(),
-            show_private: false,
+            show_private,
             price: post.price,
             owner: post.owner,
             created_at: post.created_at,
