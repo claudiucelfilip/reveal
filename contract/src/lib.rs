@@ -72,6 +72,7 @@ struct PostDetails {
     created_at: u32,
     rating: i32,
     score: f32,
+    voted: i8,
 }
 
 
@@ -234,6 +235,11 @@ impl Blog {
 
         let mut show_private = false;
 
+        let voted = match post.votes.get(&params.sender) {
+            Some(vote) => *vote,
+            None => 0,
+        };
+
         if post.paid_viewers.contains(&params.sender) {
             show_private = true;
         }
@@ -249,6 +255,7 @@ impl Blog {
             created_at: post.created_at,
             rating,
             score: calculate_score(rating, post.created_at),
+            voted
         };
 
         if post.paid_viewers.contains(&params.sender) == true {
@@ -270,7 +277,7 @@ impl Blog {
             .unwrap();
 
         if post.paid_viewers.contains(&params.sender) == false {
-            return Err(format!("{:?} isn't allow to upvote", params.sender).into());
+            return Err(format!("{:?} isn't allowed to upvote", params.sender).into());
         }
 
         post.votes.insert(params.sender, 1);
@@ -278,8 +285,10 @@ impl Blog {
         Ok(())
     }
 
-    fn downvote_post(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+    fn vote_post(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
         let post_id: String = params.read();
+        let vote: u8 = params.read();
+
         let post = self
             .posts
             .iter_mut()
@@ -287,10 +296,14 @@ impl Blog {
             .unwrap();
 
         if post.paid_viewers.contains(&params.sender) == false {
-            return Err(format!("{:?} isn't allow to downvote", params.sender).into());
+            return Err(format!("{:?} isn't allowed to downvote", params.sender).into());
         }
 
-        post.votes.insert(params.sender, -1);
+        match vote {
+            1 => post.votes.insert(params.sender, 1),
+            0 => post.votes.insert(params.sender, -1),
+            _ => panic!(),
+        };
 
         Ok(())
     }
