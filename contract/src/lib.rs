@@ -1,7 +1,6 @@
 use std::error::Error;
-
+// use smart_contract::debug;
 use smart_contract::log;
-use smart_contract::debug;
 use smart_contract::payload::Parameters;
 use smart_contract::transaction::{Transaction, Transfer};
 use smart_contract_macros::smart_contract;
@@ -9,7 +8,33 @@ use smart_contract_macros::smart_contract;
 use serde::Serialize;
 use std::collections::HashMap;
 
-extern crate nanoid;
+static mut COUNTER: u32 = 0;
+fn generate_id() -> String {
+    unsafe {
+        COUNTER = COUNTER + 1;
+        COUNTER.to_string()
+    }
+}
+
+// fn to_hex_string(bytes: [u8; 32]) -> String {
+//     let strs: Vec<String> = bytes.iter()
+//         .map(|b| format!("{:02x}", b))
+//         .collect();
+//     strs.join("")
+// }
+
+
+fn calculate_rating(post: &Post) -> i32 {
+    let mut rating: i32 = 0;
+    for (_, vote) in &post.votes {
+        rating = rating + *vote as i32;
+    }
+    rating
+}
+
+fn calculate_score(rating: i32, created_at: u32) -> f32 {
+    (rating as f32 / (created_at as f32 + 2.0)).powf(1.8)
+}
 
 #[derive(Debug, Clone, Serialize)]
 struct Post {
@@ -49,22 +74,13 @@ struct PostDetails {
     score: f32,
 }
 
-fn calculate_rating(post: &Post) -> i32 {
-    let mut rating: i32 = 0;
-    for (_, vote) in &post.votes {
-        rating = rating + *vote as i32;
-    }
-    rating
-}
 
-fn calculate_score(rating: i32, created_at: u32) -> f32 {
-    (rating as f32 / (created_at as f32 + 2.0)).powf(1.8)
-}
 
 #[derive(Debug)]
 struct Blog {
     posts: Vec<Post>,
     blog_owner: [u8; 32],
+    balances: HashMap<[u8; 32], u64>,
 }
 
 #[smart_contract]
@@ -73,29 +89,29 @@ impl Blog {
         Self {
             posts: Vec::new(),
             blog_owner: params.sender,
+            balances: HashMap::new()
         }
     }
+
     fn create_post(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
-        let id: String = nanoid::simple();
+        if params.amount < 2 {
+            return Err("2 PERLs are needed to Create a Post".into());
+        }
+        
+        let blog_owner_balance = match self.balances.get(&self.blog_owner) {
+            Some(balance) => *balance,
+            None => 0,
+        };
+
+        self.balances.insert(self.blog_owner, blog_owner_balance + params.amount);
+
+        let id = generate_id();
+        
         let title: String = params.read();
         let public_text: String = params.read();
         let private_text: String = params.read();
         let price: u64 = params.read();
-        let amount: u64 = params.read();
         let created_at: u32 = params.read();
-
-        debug!(&title, &public_text, &private_text, price, amount);
-        if amount < 2 {
-            return Err("Creator must contribute 2 PERLs to Blog Owner".into());
-        }
-
-        Transfer {
-            destination: self.blog_owner,
-            amount,
-            func_name: vec![],
-            func_params: vec![],
-        }
-        .send_transaction();
 
         let post = Post {
             id,
@@ -109,8 +125,28 @@ impl Blog {
             votes: HashMap::new(),
         };
 
-        debug!(&post);
         self.posts.push(post);
+
+        Ok(())
+    }
+
+    fn cash_out(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+        let sender_balance = match self.balances.get(&params.sender) {
+            Some(balance) => *balance,
+            None => 0,
+        };
+        if sender_balance == 0 {
+            return Err("Sender has no PERLS".into());
+        }
+        Transfer {
+            destination: params.sender,
+            amount: sender_balance,
+            func_name: vec![],
+            func_params: vec![],
+        }
+        .send_transaction();
+
+        self.balances.insert(params.sender, 0);
 
         Ok(())
     }
@@ -127,16 +163,14 @@ impl Blog {
             return Err(format!("{:?} already paid", params.sender).into());
         }
 
-        Transfer {
-            destination: post.owner,
-            amount: post.price,
-            func_name: vec![],
-            func_params: vec![],
-        }
-        .send_transaction();
+        let post_owner_balance = match self.balances.get(&post.owner) {
+            Some(balance) => *balance,
+            None => 0,
+        };
+
+        self.balances.insert(post.owner, post_owner_balance + params.amount);
 
         post.paid_viewers.push(params.sender);
-
         Ok(())
     }
 
