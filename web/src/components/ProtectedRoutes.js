@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import SmartContract from '../SmartContract';
 
 const ProtectedRoutes = ({ children }) => {
@@ -22,11 +22,11 @@ const ProtectedRoutes = ({ children }) => {
     if (loading) {
         return <h3>loading...</h3>;
     }
-    if (!smartContract.privateKey) {
+    if (!smartContract.privateKey || !smartContract.contractId) {
         return <Redirect to="/login" />;
     }
 
     return <>{children}</>;
 }
 
-export default ProtectedRoutes;
+export default withRouter(ProtectedRoutes);

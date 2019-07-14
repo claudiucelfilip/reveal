@@ -1,17 +1,24 @@
-import React, { useCallback, useState, useContext } from 'react';
+import React, { useCallback, useState, useEffect, useContext } from 'react';
 import SmartContract from '../SmartContract';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import * as nacl from 'tweetnacl';
 
-const Login = ({history}) => {
+const Login = ({ history }) => {
     const smartContract = useContext(SmartContract);
     const [privateKey, setPrivateKey] = useState();
     const [contractId, setContractId] = useState();
-    
+
+    useEffect(() => {
+        const generatedKeys = nacl.sign.keyPair();
+        const secretKey = Buffer.from(generatedKeys.secretKey).toString("hex");
+        setPrivateKey(secretKey);
+    }, []);
+
     const onSubmit = useCallback(async (event) => {
         event.preventDefault();
         if (privateKey && contractId) {
-            smartContract.login(privateKey, contractId);
+            smartContract.updatedKeys(privateKey, contractId);
             await smartContract.init();
             history.push('/');
         }
@@ -24,7 +31,10 @@ const Login = ({history}) => {
     const onContractChange = useCallback((event) => {
         setContractId(event.target.value);
     }, []);
-    
+
+    if (smartContract.hasKeys()) {
+        return <Redirect to="/" />;
+    }
 
     return (
         <>
@@ -36,9 +46,9 @@ const Login = ({history}) => {
                 </div>
                 <div className="form-group">
                     <label>Private Key</label>
-                    <textarea className="form-control large-textarea" rows="10" onChange={onKeyChange} />
+                    <textarea className="form-control large-textarea" rows="10" value={privateKey} onChange={onKeyChange} />
                 </div>
-                
+
                 <button className="btn btn-primary" disabled={!privateKey || !contractId} type="submit">Login</button>
             </form>
         </>

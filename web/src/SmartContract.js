@@ -1,4 +1,4 @@
-import { Wavelet, Contract, TAG_TRANSFER } from 'wavelet-client';
+import { Wavelet, Contract, TAG_TRANSFER } from '@claudiucelfilip/wavelet-client';
 import { createContext } from 'react';
 import { decorate, observable } from 'mobx';
 import JSBI from 'jsbi';
@@ -67,18 +67,25 @@ class SmartContract {
     }
 
     async init() {
-        if (this.contractId) {
-            this.contract = new Contract(this.client, this.contractId);
-            await this.contract.init();
-        } else {
-            throw Error('Missing contract ID');
+        if (!this.contractId || !this.privateKey) {
+            throw Error('Missing contractID or privateKey');
         }
+
+        await this.login();
+        this.contract = new Contract(this.client, this.contractId);
+        await this.contract.init();
     }
 
-    async login(privateKey = this.privateKey, contractId = this.contractId) {
+    updatedKeys(privateKey, contractId) {
         this.privateKey = privateKey;
         this.contractId = contractId;
+    }
 
+    hasKeys() {
+        return !!this.privateKey && !!this.contractId;
+    }
+
+    async login() {
         this.wallet = Wavelet.loadWalletFromPrivateKey(this.privateKey);
         const account = await this.client.getAccount(Buffer.from(this.wallet.publicKey).toString("hex"));
         this.account = account;
@@ -88,10 +95,9 @@ class SmartContract {
     }
 
     logout() {
-        localStorage.setItem('privateKey', '');
         this.wallet = null;
-        this.client = null;
         this.contract = null;
+        this.updatedKeys('', '');
         if (this.accountPoll) {
             this.accountPoll.close();
         }
