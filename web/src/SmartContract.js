@@ -1,4 +1,6 @@
 import { Wavelet, Contract, TAG_TRANSFER } from 'wavelet-client';
+import { createContext } from 'react';
+import { decorate, observable } from 'mobx';
 import JSBI from 'jsbi';
 const BigInt = JSBI.BigInt;
 
@@ -6,20 +8,8 @@ const GAS_LIMIT = 1000000;
 const POST_CREATE_COST = 1000000;
 
 class SmartContract {
-    static getInstance() {
-        if (SmartContract.singleton === undefined) {
-            SmartContract.singleton = new SmartContract();
-        }
-        return SmartContract.singleton;
-    }
-
     constructor() {
         this.client = new Wavelet('http://127.0.0.1:9000');
-        const privateKey = localStorage.getItem('privateKey');
-        if (privateKey) {
-            this.wallet = Wavelet.loadWalletFromPrivateKey(privateKey);
-        }
-        
     }
 
     async pollAccountUpdates(
@@ -36,7 +26,18 @@ class SmartContract {
             { id }
         );
     }
-
+    get privateKey() {
+        return localStorage.getItem('privateKey');
+    }
+    set privateKey(value) {
+        localStorage.setItem('privateKey', value);
+    }
+    get contractId() {
+        return localStorage.getItem('contractId');
+    }
+    set contractId(value) {
+        localStorage.setItem('contractId', value);
+    }
     listenForApplied = (tag, txId) => {
         return new Promise(async (resolve, reject) => {
             const poll = await this.client.pollTransactions(
@@ -66,15 +67,24 @@ class SmartContract {
     }
 
     async init() {
-        this.contract = new Contract(this.client, 'eec35aa907ca5f458ad3f7d9cf018b89b29bd5a4308fe1d0dfedcc56aa36e615');
-        await this.contract.init();
-
-        this.account = await this.client.getAccount(Buffer.from(this.wallet.publicKey).toString("hex"));
-        this.accountPoll = await this.pollAccountUpdates();
+        if (this.contractId) {
+            this.contract = new Contract(this.client, this.contractId);
+            await this.contract.init();
+        } else {
+            throw Error('Missing contract ID');
+        }
     }
 
-    savePrivateKey(key) {
-        localStorage.setItem('privateKey', key);
+    async login(privateKey = this.privateKey, contractId = this.contractId) {
+        this.privateKey = privateKey;
+        this.contractId = contractId;
+
+        this.wallet = Wavelet.loadWalletFromPrivateKey(this.privateKey);
+        const account = await this.client.getAccount(Buffer.from(this.wallet.publicKey).toString("hex"));
+        this.account = account;
+        
+        this.accountPoll = await this.pollAccountUpdates();
+        return true;
     }
 
     logout() {
@@ -211,4 +221,8 @@ class SmartContract {
     }
 }
 
-export default SmartContract;
+decorate(SmartContract, {
+    account: observable
+});
+
+export default createContext(new SmartContract());

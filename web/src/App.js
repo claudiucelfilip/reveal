@@ -1,40 +1,32 @@
-import React, { useEffect, useCallback, useState } from 'react';
-import './App.css';
+import React, { useEffect, useContext, useState } from 'react';
+import './App.scss';
 
-import { BrowserRouter as Router, Route, Link, withRouter } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Home from './components/Home';
 import Login from './components/Login';
 import Create from './components/Create';
 import Details from './components/Details';
 import Header from './components/Header';
-import SmartContract from './SmartContract';
-const smartContract = SmartContract.getInstance();
+import ProtectedRoutes from './components/ProtectedRoutes';
 
 const App = () => {
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const initSmartContract = async () => {
-      await smartContract.init();
-      setLoading(false);
-    };
-    initSmartContract();
-  }, []);
-
-  if (loading) {
-    return <h3>loading...</h3>;
-  }
   return (
-    <div className="App">
+    <>
       <Router>
         <Header />
-        <div>
-          <Route exact path="/" component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/create" component={Create} />
-          <Route path="/post/:id" component={Details} />
-        </div>
+        <main role="main">
+
+          <div className="container">
+            <Route path="/login" component={Login} />
+            <ProtectedRoutes>
+              <Route exact path="/" component={Home} />
+              <Route path="/create" component={Create} />
+              <Route path="/post/:id" component={Details} />
+            </ProtectedRoutes>
+          </div>
+        </main>
       </Router>
-    </div>
+    </>
   );
 }
 

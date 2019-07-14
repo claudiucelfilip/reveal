@@ -1,11 +1,14 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect, useContext, useRef } from 'react';
+import { Redirect } from 'react-router-dom';
 import SmartContract from '../SmartContract';
+import { observer } from 'mobx-react-lite';
 import Quill from 'quill';
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
-const smartContract = SmartContract.getInstance();
+
 
 const Create = ({ history }) => {
+    const smartContract = useContext(SmartContract);
     const [loading, setLoading] = useState(false);
     const publicTextRef = useRef();
     const privateTextRef = useRef();
@@ -37,7 +40,9 @@ const Create = ({ history }) => {
             console.error(err);
         }
         setLoading(false);
-    }, []);
+    }, [smartContract, history]);
+
+    
 
     useEffect(() => {
         const toolbarOptions = [
@@ -77,6 +82,11 @@ const Create = ({ history }) => {
             theme: 'snow'  // or 'bubble'
         });
     }, []);
+
+    if (!smartContract.privateKey) {
+        return <Redirect to="/login" />
+    }
+
     if (loading) {
         return <h3>loading...</h3>;
     }
@@ -84,31 +94,32 @@ const Create = ({ history }) => {
         <>
             <h1>Create</h1>
             <form onSubmit={onSubmit}>
-                <div>
+                <div className="form-group">
                     <label>Title</label>
-                    <input type="text" name="title" />
+                    <input className="form-control" type="text" name="title" />
                 </div>
-                <div>
+                
+                <div className="form-group">
                     <label>Public Text</label>
 
                     {/* <textarea  name="publicText" /> */}
                     <div id="publicText" ref={publicTextRef} />
                 </div>
-                <div>
+                <div className="form-group">
                     <label>Private Text</label>
                     {/* <textarea name="privateText" /> */}
                     <div id="privateText" ref={privateTextRef} />
                 </div>
-                <div>
+                <div className="form-group">
                     <label>Price</label>
-                    <input type="text" name="price" defaultValue={200} />
+                    <input className="form-control" type="text" name="price" defaultValue={200} />
                 </div>
-                <div>
-                    <button type="submit">Create</button>
+                <div className="form-group">
+                    <button className="btn btn-primary" type="submit">Create</button>
                 </div>
             </form>
         </>
     );
 };
 
-export default Create;
+export default observer(Create);

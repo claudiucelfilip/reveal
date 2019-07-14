@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
+import { withRouter, Redirect } from 'react-router-dom';
 import SmartContract from '../SmartContract';
+import { observer } from 'mobx-react-lite';
 import Html from './Html';
 
-const smartContract = SmartContract.getInstance();
-
 const Details = ({ match, history }) => {
+    const smartContract = useContext(SmartContract);
     const [loading, setLoading] = useState(true);
     const [post, setPost] = useState();
     const [liked, setLiked] = useState(null);
@@ -25,7 +25,7 @@ const Details = ({ match, history }) => {
             history.push('/');
         }
         setLoading(false);
-    }, [params, history]);
+    }, [smartContract, params, history]);
 
     useEffect(() => {
         fetchPost();
@@ -54,6 +54,9 @@ const Details = ({ match, history }) => {
         votePost(false);
     }, [votePost]);
 
+    if (!smartContract.privateKey) {
+        return <Redirect to="/login" />
+    }
     if (loading) {
         return <h3>loading...</h3>;
     }
@@ -82,4 +85,4 @@ const Details = ({ match, history }) => {
     );
 };
 
-export default withRouter(Details);
+export default withRouter(observer(Details));

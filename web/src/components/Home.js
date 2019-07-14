@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import SmartContract from '../SmartContract';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 import Html from './Html';
 
-const smartContract = SmartContract.getInstance();
-
 const Home = () => {
+    const smartContract = useContext(SmartContract);
     const [posts, setPosts] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
@@ -18,24 +18,30 @@ const Home = () => {
         };
 
         fetchData();
-    }, []);
+    }, [smartContract]);
+
+    if (!smartContract.privateKey) {
+        return <Redirect to="/login" />
+    }
     return (
         <>
             <h1>Home</h1>
-            {posts.map(post => (
-                <article className="article" key={post.id}>
-                    <div className="rating">
-                        {post.rating}
-                    </div>
-                    <div className="content">
-                        <h3>{post.title}</h3>
-                        <Html content={post.public_text} />
-                        <Link to={'/post/' + post.id}>Read More</Link>
-                    </div>
-                </article>
-            ))}
+            <div className="row d-flex flex-wrap">
+                {posts.map(post => (
+                    <article className="col-md-4" key={post.id}>
+                        <div className="content">
+                            <h2>{post.title}</h2>
+                            <Html content={post.public_text} />
+                            <p>
+                                <Link className="btn btn-secondary" to={'/post/' + post.id}>Read More</Link>
+                            </p>
+
+                        </div>
+                    </article>
+                ))}
+            </div>
         </>
     );
 };
 
-export default Home;
+export default observer(Home);

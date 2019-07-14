@@ -1,0 +1,31 @@
+// Import Bootstrap and its default variables
+@import '~bootstrap/scss/bootstrap.scss';
+
+
+* {
+  box-sizing: border-box;
+}
+
+.article {
+  display: flex;
+  align-items: top;
+}
+
+.article .content {
+  flex: 1;
+}
+
+.article .rating {
+  margin: 20px 20px 0 0;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
+.large-textarea {
+  width: 100%;
+}
+main {
+  margin-top: 100px;
+}
