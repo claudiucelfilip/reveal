@@ -42,6 +42,7 @@ fn calculate_score(rating: i32, created_at: u32) -> f32 {
 struct Post {
     id: String,
     title: String,
+    excerpt: String,
     public_text: String,
     private_text: String,
     price: u64,
@@ -55,7 +56,7 @@ struct Post {
 struct PostExcerpt {
     id: String,
     title: String,
-    public_text: String,
+    excerpt: String,
     owner: [u8; 32],
     created_at: u32,
     rating: i32,
@@ -111,6 +112,7 @@ impl Blog {
         let id = generate_id();
         
         let title: String = params.read();
+        let excerpt: String = params.read();
         let public_text: String = params.read();
         let private_text: String = params.read();
         let price: u64 = params.read();
@@ -119,6 +121,7 @@ impl Blog {
         let post = Post {
             id,
             title,
+            excerpt,
             public_text,
             private_text,
             price,
@@ -186,7 +189,7 @@ impl Blog {
                 PostExcerpt {
                     id: post.id.clone(),
                     title: post.title.clone(),
-                    public_text: post.public_text.clone(),
+                    excerpt: post.excerpt.clone(),
                     owner: post.owner,
                     created_at: post.created_at,
                     rating,

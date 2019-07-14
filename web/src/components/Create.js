@@ -98,7 +98,10 @@ const Create = ({ history }) => {
                     <label>Title</label>
                     <input className="form-control" type="text" name="title" />
                 </div>
-                
+                <div className="form-group">
+                    <label>Excerpt</label>
+                    <textarea className="form-control large-textarea" name="excerpt" />
+                </div>
                 <div className="form-group">
                     <label>Public Text</label>
 
@@ -112,7 +115,7 @@ const Create = ({ history }) => {
                 </div>
                 <div className="form-group">
                     <label>Price</label>
-                    <input className="form-control" type="text" name="price" defaultValue={200} />
+                    <input className="form-control" type="text" name="price" defaultValue={1000000} />
                 </div>
                 <div className="form-group">
                     <button className="btn btn-primary" type="submit">Create</button>

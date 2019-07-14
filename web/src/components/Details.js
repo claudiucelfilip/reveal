@@ -33,16 +33,26 @@ const Details = ({ match, history }) => {
 
     const onPayClick = useCallback(async (event) => {
         setLoading(true);
-        await smartContract.payPost(post.id, post.price);
-        fetchPost();
-    }, [post, fetchPost]);
+        try {
+            await smartContract.payPost(post.id, post.price);
+            fetchPost();
+        } catch (err) {
+            console.error(err);
+        }
+        setLoading(false);
+        
+    }, [post, fetchPost, smartContract]);
 
     const votePost = useCallback(async (vote) => {
         setLoading(true);
-        await smartContract.votePost(post.id, vote);
-        setLiked(true);
+        try {
+            await smartContract.votePost(post.id, vote);
+            setLiked(true);
+        } catch (err) {
+            console.error(err);
+        }
         setLoading(false);
-    }, [post]);
+    }, [post, smartContract]);
 
     const likeClick = useCallback((event) => {
         event.preventDefault();

@@ -31,7 +31,7 @@ const Home = () => {
                     <article className="col-md-4" key={post.id}>
                         <div className="content">
                             <h2>{post.title}</h2>
-                            <Html content={post.public_text} />
+                            <Html content={post.excerpt} />
                             <p>
                                 <Link className="btn btn-secondary" to={'/post/' + post.id}>Read More</Link>
                             </p>

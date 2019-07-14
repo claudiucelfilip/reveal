@@ -90,7 +90,7 @@ class SmartContract {
         const account = await this.client.getAccount(Buffer.from(this.wallet.publicKey).toString("hex"));
         this.account = account;
         
-        this.accountPoll = await this.pollAccountUpdates();
+        this.accountPoll = await this.pollAccountUpdates(account.public_key);
         return true;
     }
 
@@ -181,6 +181,10 @@ class SmartContract {
             {
                 type: "string",
                 value: data.title
+            },
+            {
+                type: "string",
+                value: data.excerpt
             },
             {
                 type: "string",
