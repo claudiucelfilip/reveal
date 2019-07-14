@@ -136,6 +136,16 @@ impl Blog {
         Ok(())
     }
 
+    fn get_balance(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+        let sender_balance = match self.balances.get(&params.sender) {
+            Some(balance) => *balance,
+            None => 0,
+        };
+
+        log(&sender_balance.to_string());
+
+        Ok(())
+    }
     fn cash_out(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
         let sender_balance = match self.balances.get(&params.sender) {
             Some(balance) => *balance,

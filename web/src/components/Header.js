@@ -13,14 +13,6 @@ const Header = ({ history }) => {
         history.push('/');
     }, [smartContract, history]);
 
-    const cashOut = useCallback(async (event) => {
-        event.preventDefault();
-        try {
-            await smartContract.cashOut();
-        } catch (err) {
-            console.error(err);
-        }
-    }, [smartContract]);
     const account = smartContract.account;
     if (!smartContract.privateKey || !account) {
         return <></>;
@@ -48,8 +40,7 @@ const Header = ({ history }) => {
                         <Link className="nav-link" to="/create">Create</Link>
                     </li>
                     <li className="nav-item">
-
-                        <a className="nav-link disabled" onClick={cashOut}>Cash Out</a>
+                    <Link className="nav-link" to="/balance">Balance</Link>
                     </li>
 
                     <li className="nav-item">

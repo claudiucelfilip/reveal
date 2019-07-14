@@ -117,6 +117,7 @@ class SmartContract {
     }
 
     async getPosts() {
+        this.reloadMemory();
         const response = this.contract.test(
             this.wallet,
             'get_posts',
@@ -126,7 +127,19 @@ class SmartContract {
         return this.parseResponse(response);
     }
 
+    async getBalance() {
+        this.reloadMemory();
+        const response = this.contract.test(
+            this.wallet,
+            'get_balance',
+            BigInt(0)
+        );
+
+        return this.parseResponse(response);
+    }
+
     async getPost(id) {
+        this.reloadMemory();
         const response = this.contract.test(
             this.wallet,
             'get_post_details',

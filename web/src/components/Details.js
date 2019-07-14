@@ -64,9 +64,6 @@ const Details = ({ match, history }) => {
         votePost(false);
     }, [votePost]);
 
-    if (!smartContract.privateKey) {
-        return <Redirect to="/login" />
-    }
     if (loading) {
         return <h3>loading...</h3>;
     }
