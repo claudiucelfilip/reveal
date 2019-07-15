@@ -138,6 +138,17 @@ class SmartContract {
         return this.parseResponse(response);
     }
 
+    async getTags() {
+        this.reloadMemory();
+        const response = this.contract.test(
+            this.wallet,
+            'get_tags',
+            BigInt(0)
+        );
+
+        return this.parseResponse(response);
+    }
+
     async getPost(id) {
         this.reloadMemory();
         const response = this.contract.test(
@@ -194,6 +205,10 @@ class SmartContract {
             {
                 type: "string",
                 value: data.title
+            },
+            {
+                type: "string",
+                value: data.tags
             },
             {
                 type: "string",

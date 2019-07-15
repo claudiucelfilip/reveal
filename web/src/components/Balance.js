@@ -1,5 +1,4 @@
-import React, { useCallback, useState, useEffect, useContext, useRef } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useCallback, useState, useEffect, useContext } from 'react';
 import SmartContract from '../SmartContract';
 import { observer } from 'mobx-react-lite';
 

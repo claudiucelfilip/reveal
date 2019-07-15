@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React from 'react';
 import './App.scss';
 
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";

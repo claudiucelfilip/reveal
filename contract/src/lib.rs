@@ -1,4 +1,8 @@
 use std::error::Error;
+
+extern crate array_tool;
+
+use array_tool::vec::Union;
 // use smart_contract::debug;
 use smart_contract::log;
 use smart_contract::payload::Parameters;
@@ -42,6 +46,7 @@ fn calculate_score(rating: i32, created_at: u32) -> f32 {
 struct Post {
     id: String,
     title: String,
+    tags: String,
     excerpt: String,
     public_text: String,
     private_text: String,
@@ -56,6 +61,7 @@ struct Post {
 struct PostExcerpt {
     id: String,
     title: String,
+    tags: String,
     excerpt: String,
     owner: [u8; 32],
     created_at: u32,
@@ -67,6 +73,7 @@ struct PostExcerpt {
 struct PostDetails {
     id: String,
     title: String,
+    tags: String,
     public_text: String,
     private_text: String,
     show_private: bool,
@@ -112,6 +119,7 @@ impl Blog {
         let id = generate_id();
         
         let title: String = params.read();
+        let tags: String = params.read();
         let excerpt: String = params.read();
         let public_text: String = params.read();
         let private_text: String = params.read();
@@ -121,6 +129,7 @@ impl Blog {
         let post = Post {
             id,
             title,
+            tags,
             excerpt,
             public_text,
             private_text,
@@ -143,6 +152,21 @@ impl Blog {
         };
 
         log(&sender_balance.to_string());
+
+        Ok(())
+    }
+
+    fn get_tags(&mut self, _params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+        let output: Vec<String> = vec![];
+        let tags: Vec<String> = self.posts
+            .iter()
+            .fold(output, |acc, post| -> Vec<String> {
+                let tags =  post.tags.split("|").map(String::from).collect();
+                acc.union(tags)
+            });
+
+        let tags_json = serde_json::to_string(&tags).unwrap();
+        log(&tags_json);
 
         Ok(())
     }
@@ -199,6 +223,7 @@ impl Blog {
                 PostExcerpt {
                     id: post.id.clone(),
                     title: post.title.clone(),
+                    tags: post.tags.clone(),
                     excerpt: post.excerpt.clone(),
                     owner: post.owner,
                     created_at: post.created_at,
@@ -238,6 +263,7 @@ impl Blog {
         let mut post_result = PostDetails {
             id: post.id.clone(),
             title: post.title.clone(),
+            tags: post.tags.clone(),
             public_text: post.public_text.clone(),
             private_text: "".to_string(),
             show_private,
