@@ -10,6 +10,9 @@ use smart_contract::transaction::{Transaction, Transfer};
 use smart_contract_macros::smart_contract;
 
 use serde::Serialize;
+use serde_json::json;
+use serde_json::Value;
+
 use std::collections::HashMap;
 
 static mut COUNTER: u32 = 0;
@@ -22,13 +25,10 @@ fn generate_id() -> String {
     }
 }
 
-// fn to_hex_string(bytes: [u8; 32]) -> String {
-//     let strs: Vec<String> = bytes.iter()
-//         .map(|b| format!("{:02x}", b))
-//         .collect();
-//     strs.join("")
-// }
-
+fn to_hex_string(bytes: [u8; 32]) -> String {
+    let strs: Vec<String> = bytes.iter().map(|b| format!("{:02x}", b)).collect();
+    strs.join("")
+}
 
 fn calculate_rating(post: &Post) -> i32 {
     let mut rating: i32 = 0;
@@ -57,36 +57,6 @@ struct Post {
     votes: HashMap<[u8; 32], i8>,
 }
 
-#[derive(Debug, Serialize)]
-struct PostExcerpt {
-    id: String,
-    title: String,
-    tags: String,
-    excerpt: String,
-    owner: [u8; 32],
-    created_at: u32,
-    rating: i32,
-    score: f32,
-}
-
-#[derive(Debug, Serialize)]
-struct PostDetails {
-    id: String,
-    title: String,
-    tags: String,
-    public_text: String,
-    private_text: String,
-    show_private: bool,
-    price: u64,
-    owner: [u8; 32],
-    created_at: u32,
-    rating: i32,
-    score: f32,
-    voted: i8,
-}
-
-
-
 #[derive(Debug)]
 struct Blog {
     posts: Vec<Post>,
@@ -100,7 +70,7 @@ impl Blog {
         Self {
             posts: Vec::new(),
             blog_owner: params.sender,
-            balances: HashMap::new()
+            balances: HashMap::new(),
         }
     }
 
@@ -108,16 +78,15 @@ impl Blog {
         if params.amount < CREATE_POST_FEE {
             return Err(format!("{} PERLs are needed to Create a Post", CREATE_POST_FEE).into());
         }
-        
         let blog_owner_balance = match self.balances.get(&self.blog_owner) {
             Some(balance) => *balance,
             None => 0,
         };
 
-        self.balances.insert(self.blog_owner, blog_owner_balance + params.amount);
+        self.balances
+            .insert(self.blog_owner, blog_owner_balance + params.amount);
 
         let id = generate_id();
-        
         let title: String = params.read();
         let tags: String = params.read();
         let excerpt: String = params.read();
@@ -158,12 +127,10 @@ impl Blog {
 
     fn get_tags(&mut self, _params: &mut Parameters) -> Result<(), Box<dyn Error>> {
         let output: Vec<String> = vec![];
-        let tags: Vec<String> = self.posts
-            .iter()
-            .fold(output, |acc, post| -> Vec<String> {
-                let tags =  post.tags.split("|").map(String::from).collect();
-                acc.union(tags)
-            });
+        let tags: Vec<String> = self.posts.iter().fold(output, |acc, post| -> Vec<String> {
+            let tags = post.tags.split("|").map(String::from).collect();
+            acc.union(tags)
+        });
 
         let tags_json = serde_json::to_string(&tags).unwrap();
         log(&tags_json);
@@ -208,28 +175,29 @@ impl Blog {
             None => 0,
         };
 
-        self.balances.insert(post.owner, post_owner_balance + params.amount);
+        self.balances
+            .insert(post.owner, post_owner_balance + params.amount);
 
         post.paid_viewers.push(params.sender);
         Ok(())
     }
 
     fn get_posts(&mut self, _params: &mut Parameters) -> Result<(), Box<dyn Error>> {
-        let posts: Vec<PostExcerpt> = self
+        let posts: Vec<Value> = self
             .posts
             .iter()
-            .map(|post| -> PostExcerpt {
+            .map(|post| -> Value {
                 let rating = calculate_rating(&post);
-                PostExcerpt {
-                    id: post.id.clone(),
-                    title: post.title.clone(),
-                    tags: post.tags.clone(),
-                    excerpt: post.excerpt.clone(),
-                    owner: post.owner,
-                    created_at: post.created_at,
-                    rating,
-                    score: calculate_score(rating, post.created_at),
-                }
+                json!({
+                    "id": post.id.clone(),
+                    "title": post.title.clone(),
+                    "tags": post.tags.clone(),
+                    "excerpt": post.excerpt.clone(),
+                    "owner": to_hex_string(post.owner),
+                    "created_at": post.created_at,
+                    "rating": rating,
+                    "score": calculate_score(rating, post.created_at),
+                })
             })
             .collect();
 
@@ -237,7 +205,6 @@ impl Blog {
         log(&posts_json);
         Ok(())
     }
-
 
     fn get_post_details(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
         let post_id: String = params.read();
@@ -250,37 +217,35 @@ impl Blog {
         let rating = calculate_rating(post);
 
         let mut show_private = false;
+        let mut private_text = "".to_string();
 
         let voted = match post.votes.get(&params.sender) {
             Some(vote) => *vote,
             None => 0,
         };
 
-        if post.paid_viewers.contains(&params.sender) {
-            show_private = true;
-        }
-
-        let mut post_result = PostDetails {
-            id: post.id.clone(),
-            title: post.title.clone(),
-            tags: post.tags.clone(),
-            public_text: post.public_text.clone(),
-            private_text: "".to_string(),
-            show_private,
-            price: post.price,
-            owner: post.owner,
-            created_at: post.created_at,
-            rating,
-            score: calculate_score(rating, post.created_at),
-            voted
-        };
-
         if post.paid_viewers.contains(&params.sender) == true {
-            post_result.show_private = true;
-            post_result.private_text = post.private_text.clone();
+            show_private = true;
+            private_text = post.private_text.clone();
         }
-        let post_result_json = serde_json::to_string(&post_result).unwrap();
-        log(&post_result_json);
+
+        let post_result = json!({
+            "id": post.id.clone(),
+            "title": post.title.clone(),
+            "excerpt": post.excerpt.clone(),
+            "tags": post.tags.clone(),
+            "public_text": post.public_text.clone(),
+            "private_text": private_text,
+            "show_private": show_private,
+            "price": post.price,
+            "owner": to_hex_string(post.owner),
+            "created_at": post.created_at,
+            "rating": rating,
+            "score": calculate_score(rating, post.created_at),
+            "voted": voted
+        });
+
+        log(&post_result.to_string());
 
         Ok(())
     }
