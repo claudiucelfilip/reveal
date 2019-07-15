@@ -91,7 +91,10 @@ const Details = ({ match, history }) => {
                 {liked === false && <h5>Didn't Like</h5>}
                 </>
             ) : (
-                    <button onClick={onPayClick}>Pay to see</button>
+                    <div>
+                        <h5>Costs {post.price} for the rest of the post</h5>
+                        <button onClick={onPayClick}>Pay</button>
+                    </div>
                 )}
             
         </>

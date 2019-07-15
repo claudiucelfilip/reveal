@@ -34,8 +34,11 @@ const Home = () => {
     });
     return (
         <>
-            <div>
-                <input type="text" onChange={onSearch} />
+            <div className="row">
+                <div className="pb-4 col-md-6">
+                    <h5>Search</h5>
+                    <input type="text" placeholder="Enter Tag, Title, Excerpt" className="form-control" onChange={onSearch} />
+                </div>
             </div>
             <div className="row d-flex flex-wrap">
                 {filteredPosts
