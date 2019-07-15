@@ -1,6 +1,7 @@
 import { Wavelet, Contract, TAG_TRANSFER } from '@claudiucelfilip/wavelet-client';
 import { createContext } from 'react';
 import { decorate, observable } from 'mobx';
+import moment from 'moment';
 import JSBI from 'jsbi';
 const BigInt = JSBI.BigInt;
 
@@ -84,6 +85,7 @@ class SmartContract {
     hasKeys() {
         return !!this.privateKey && !!this.contractId;
     }
+
 
     async login() {
         this.wallet = Wavelet.loadWalletFromPrivateKey(this.privateKey);
@@ -169,7 +171,7 @@ class SmartContract {
             this.wallet,
             'add_private_viewer',
             BigInt(price),
-            BigInt(GAS_LIMIT),
+            JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
             {
                 type: "string",
                 value: id
@@ -187,7 +189,7 @@ class SmartContract {
             this.wallet,
             'cash_out',
             BigInt(0),
-            BigInt(GAS_LIMIT)
+            JSBI.subtract(BigInt(this.account.balance), BigInt(2))
         );
 
         return await this.listenForApplied(
@@ -200,8 +202,8 @@ class SmartContract {
         const response = await this.contract.call(
             this.wallet,
             'create_post',
-            BigInt(POST_CREATE_COST),
-            BigInt(GAS_LIMIT),
+            BigInt(500000),
+            JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
             {
                 type: "string",
                 value: data.title
@@ -226,7 +228,7 @@ class SmartContract {
                 value: JSBI.BigInt(data.price)
             }, {
                 type: "uint32",
-                value: Date.now()
+                value: moment().unix()
             }
         );
 
@@ -241,7 +243,7 @@ class SmartContract {
             this.wallet,
             'vote_post',
             BigInt(0),
-            BigInt(GAS_LIMIT),
+            JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
             {
                 type: 'string',
                 value: id

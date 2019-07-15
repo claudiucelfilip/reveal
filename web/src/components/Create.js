@@ -60,6 +60,7 @@ const Create = ({ history }) => {
         try {
             await smartContract.createPost(data);
             history.push('/');
+            return;
         } catch (err) {
             console.error(err);
         }

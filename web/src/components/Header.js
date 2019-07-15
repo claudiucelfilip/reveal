@@ -49,7 +49,7 @@ const Header = ({ history }) => {
                 </ul>
             </div>
             <div>
-                {account.public_key} - {account.balance}
+                {account.public_key} - {account.balance} PERL(s)
             </div>
         </nav>
     );

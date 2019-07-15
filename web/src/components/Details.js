@@ -2,7 +2,9 @@ import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 import SmartContract from '../SmartContract';
 import { observer } from 'mobx-react-lite';
-import Html from './Html';
+import Html from './common/Html';
+import TagList from './common/TagList';
+import moment from 'moment';
 
 const Details = ({ match, history }) => {
     const smartContract = useContext(SmartContract);
@@ -69,7 +71,11 @@ const Details = ({ match, history }) => {
     }
     return (
         <>
-            <h1>{post.title}</h1>
+            <h1 className="title">{post.title}</h1>
+            <p>{post.excerpt}</p>
+            <p>{moment.unix(post.created_at).format('MMM Do YYYY, h:mm:ss a')}</p>
+            <p>{post.owner}</p>
+            <TagList tags={post.tags} />
             <Html content={post.public_text} />
             {post.show_private ? (
                 <>

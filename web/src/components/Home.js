@@ -2,7 +2,8 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import SmartContract from '../SmartContract';
 import { Link, Redirect } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import Html from './Html';
+import Html from './common/Html';
+import TagList from './common/TagList';
 
 const Home = () => {
     const smartContract = useContext(SmartContract);
@@ -33,7 +34,6 @@ const Home = () => {
     });
     return (
         <>
-            <h1>Home</h1>
             <div>
                 <input type="text" onChange={onSearch} />
             </div>
@@ -42,11 +42,11 @@ const Home = () => {
                     .map(post => (
                         <article className="col-md-4" key={post.id}>
                             <div className="content">
-                                <h2>{post.title}</h2>
-                                <div>{post.tags.split().map(tag => (
-                                    <span>{tag}</span>
-                                ))}</div>
-                                <Html content={post.excerpt} />
+                                <h2 className="title">{post.title}</h2>
+                                <TagList tags={post.tags} />
+                                <p className="excerpt">
+                                    {post.excerpt}
+                                </p>
                                 <p>
                                     <Link className="btn btn-secondary" to={'/post/' + post.id}>Read More</Link>
                                 </p>
