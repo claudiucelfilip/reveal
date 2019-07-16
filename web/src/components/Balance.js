@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useEffect, useContext } from 'react';
+import LoadingSpinner  from './common/LoadingSpinner';
 import SmartContract from '../SmartContract';
 import { observer } from 'mobx-react-lite';
 
@@ -25,13 +26,13 @@ const Balance = ({ history }) => {
             await smartContract.cashOut();
             fetchBalance();
         } catch (err) {
-            console.error(err);
+            smartContract.notify('danger', err.message);
         }
         setLoading(false);
     }, [smartContract, fetchBalance]);
 
     if (loading) {
-        return <h3>loading...</h3>;
+        return <LoadingSpinner />;
     }
     return (
         <>

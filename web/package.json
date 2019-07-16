@@ -17,7 +17,9 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-tag-autocomplete": "^5.11.1",
-    "tweetnacl": "^1.0.1"
+    "tweetnacl": "^1.0.1",
+    "react-notifications-component": "^1.1.1",
+    "styled-components": "^4.3.2"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 import SmartContract from '../SmartContract';
+import LoadingSpinner  from './common/LoadingSpinner';
 
 const ProtectedRoutes = ({ children }) => {
     const [loading, setLoading] = useState(true);
@@ -20,7 +21,7 @@ const ProtectedRoutes = ({ children }) => {
     }, [smartContract]);
 
     if (loading) {
-        return <h3>loading...</h3>;
+        return <LoadingSpinner />;
     }
     if (!smartContract.privateKey || !smartContract.contractId) {
         return <Redirect to="/login" />;

@@ -9,6 +9,7 @@ import Balance from './components/Balance';
 import Details from './components/Details';
 import Header from './components/Header';
 import ProtectedRoutes from './components/ProtectedRoutes';
+import Notification  from './components/common/notification/Notification';
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
             </ProtectedRoutes>
           </div>
         </main>
+        <Notification />
       </Router>
     </>
   );

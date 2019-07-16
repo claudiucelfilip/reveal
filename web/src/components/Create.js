@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 import SmartContract from '../SmartContract';
 import { observer } from 'mobx-react-lite';
 import ReactTags from 'react-tag-autocomplete';
+import LoadingSpinner  from './common/LoadingSpinner';
 import Quill from 'quill';
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
@@ -62,7 +63,7 @@ const Create = ({ history }) => {
             history.push('/');
             return;
         } catch (err) {
-            console.error(err);
+            smartContract.notify('danger', err.message);
         }
         setLoading(false);
     }, [smartContract, history, tags]);
@@ -115,7 +116,7 @@ const Create = ({ history }) => {
     }
 
     if (loading) {
-        return <h3>loading...</h3>;
+        return <LoadingSpinner />;
     }
     return (
         <>

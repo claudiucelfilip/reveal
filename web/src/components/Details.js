@@ -4,6 +4,7 @@ import SmartContract from '../SmartContract';
 import { observer } from 'mobx-react-lite';
 import Html from './common/Html';
 import TagList from './common/TagList';
+import LoadingSpinner  from './common/LoadingSpinner';
 import moment from 'moment';
 
 const Details = ({ match, history }) => {
@@ -23,7 +24,7 @@ const Details = ({ match, history }) => {
             }
             setPost(post);
         } catch (err) {
-            console.error(err);
+            smartContract.notify('danger', err.message);
             history.push('/');
         }
         setLoading(false);
@@ -39,7 +40,7 @@ const Details = ({ match, history }) => {
             await smartContract.payPost(post.id, post.price);
             fetchPost();
         } catch (err) {
-            console.error(err);
+            smartContract.notify('danger', err.message);
         }
         setLoading(false);
         
@@ -51,7 +52,7 @@ const Details = ({ match, history }) => {
             await smartContract.votePost(post.id, vote);
             setLiked(true);
         } catch (err) {
-            console.error(err);
+            smartContract.notify('danger', err.message);
         }
         setLoading(false);
     }, [post, smartContract]);
@@ -67,7 +68,7 @@ const Details = ({ match, history }) => {
     }, [votePost]);
 
     if (loading) {
-        return <h3>loading...</h3>;
+        return <LoadingSpinner />;
     }
     return (
         <>

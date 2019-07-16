@@ -118,6 +118,10 @@ class SmartContract {
         return data;
     }
 
+    notify(type, message) {
+        this.notification = {type, message};
+    }
+
     async getPosts() {
         this.reloadMemory();
         const response = this.contract.test(
@@ -266,7 +270,8 @@ class SmartContract {
 }
 
 decorate(SmartContract, {
-    account: observable
+    account: observable,
+    notification: observable
 });
 
 export default createContext(new SmartContract());

@@ -15,7 +15,7 @@ const Home = () => {
                 const posts = await smartContract.getPosts();
                 setPosts(posts);
             } catch (err) {
-                console.error(err);
+                smartContract.notify('danger', err.message);
             }
         };
 
