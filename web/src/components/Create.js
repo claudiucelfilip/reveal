@@ -60,6 +60,7 @@ const Create = ({ history }) => {
         setLoading(true);
         try {
             await smartContract.createPost(data);
+            smartContract.notify('success', 'Your post has been published!');
             history.push('/');
             return;
         } catch (err) {

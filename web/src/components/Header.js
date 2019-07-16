@@ -1,5 +1,5 @@
 import React, { useCallback, useContext } from 'react';
-import { Link, withRouter } from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
 import SmartContract from '../SmartContract';
 import { observer } from 'mobx-react-lite';
 
@@ -34,13 +34,13 @@ const Header = ({ history }) => {
             <div className="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul className="navbar-nav mr-auto">
                     <li className="nav-item">
-                        <Link className="nav-link" to="/">Home</Link>
+                        <NavLink className="nav-link" exact={true} to="/">Home</NavLink>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/create">Create</Link>
+                        <NavLink className="nav-link" to="/create">Create</NavLink>
                     </li>
                     <li className="nav-item">
-                    <Link className="nav-link" to="/balance">Balance</Link>
+                    <NavLink className="nav-link" to="/balance">Balance</NavLink>
                     </li>
 
                     <li className="nav-item">

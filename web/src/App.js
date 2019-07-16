@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useCallback } from 'react';
 import './App.scss';
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
@@ -9,9 +9,10 @@ import Balance from './components/Balance';
 import Details from './components/Details';
 import Header from './components/Header';
 import ProtectedRoutes from './components/ProtectedRoutes';
-import Notification  from './components/common/notification/Notification';
+import Notification from './components/common/notification/Notification';
 
 const App = () => {
+  
   return (
     <>
       <Router>

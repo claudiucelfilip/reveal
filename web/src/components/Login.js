@@ -7,7 +7,7 @@ import * as nacl from 'tweetnacl';
 const Login = ({ history }) => {
     const smartContract = useContext(SmartContract);
     const [privateKey, setPrivateKey] = useState();
-    const [contractId, setContractId] = useState();
+    const [contractId, setContractId] = useState(smartContract.contractId);
 
     useEffect(() => {
         const generatedKeys = nacl.sign.keyPair();
@@ -18,7 +18,8 @@ const Login = ({ history }) => {
     const onSubmit = useCallback(async (event) => {
         event.preventDefault();
         if (privateKey && contractId) {
-            smartContract.updatedKeys(privateKey, contractId);
+            smartContract.privateKey = privateKey;
+            smartContract.contractId = contractId;
             await smartContract.init();
             history.push('/');
         }
@@ -42,7 +43,7 @@ const Login = ({ history }) => {
             <form onSubmit={onSubmit}>
                 <div className="form-group">
                     <label>Smart Contract</label>
-                    <textarea className="form-control large-textarea" rows="1" onChange={onContractChange} />
+                    <textarea className="form-control large-textarea" rows="1" defaultValue={smartContract.contractId} onChange={onContractChange} />
                 </div>
                 <div className="form-group">
                     <label>Private Key</label>

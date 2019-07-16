@@ -88,6 +88,9 @@ class SmartContract {
 
 
     async login() {
+        if (!this.privateKey) {
+            throw Error('Missing privateKey');
+        }
         this.wallet = Wavelet.loadWalletFromPrivateKey(this.privateKey);
         const account = await this.client.getAccount(Buffer.from(this.wallet.publicKey).toString("hex"));
         this.account = account;
@@ -98,8 +101,7 @@ class SmartContract {
 
     logout() {
         this.wallet = null;
-        this.contract = null;
-        this.updatedKeys('', '');
+        this.privateKey = '';
         if (this.accountPoll) {
             this.accountPoll.close();
         }
@@ -114,8 +116,13 @@ class SmartContract {
     }
 
     reloadMemory = async (data) => {
-        await this.contract.fetchAndPopulateMemoryPages();
-        return data;
+        try {
+            await this.contract.fetchAndPopulateMemoryPages();
+            return data;
+        } catch (err) {
+            this.notify('danger', err.message);
+        }
+        
     }
 
     notify(type, message) {

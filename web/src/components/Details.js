@@ -3,10 +3,27 @@ import { withRouter } from 'react-router-dom';
 import SmartContract from '../SmartContract';
 import { observer } from 'mobx-react-lite';
 import Html from './common/Html';
+import { Like, Unlike, CenterBox } from './common/core';
 import TagList from './common/TagList';
-import LoadingSpinner  from './common/LoadingSpinner';
+import LoadingSpinner from './common/LoadingSpinner';
 import moment from 'moment';
+import styled from 'styled-components';
 
+const Wrapper = styled.article`
+    font-size: 16px;
+`;
+
+const Vote = styled.span`
+    display: inline-block;
+    margin: 0 15px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+
+    &:hover {
+        opacity: 1;
+    }
+`;
 const Details = ({ match, history }) => {
     const smartContract = useContext(SmartContract);
     const [loading, setLoading] = useState(true);
@@ -19,7 +36,7 @@ const Details = ({ match, history }) => {
         try {
             const post = await smartContract.getPost(params.id).then();
             if (post.voted) {
-                const postLiked = post.voted === 1 ? true: false;
+                const postLiked = post.voted === 1 ? true : false;
                 setLiked(postLiked);
             }
             setPost(post);
@@ -43,7 +60,7 @@ const Details = ({ match, history }) => {
             smartContract.notify('danger', err.message);
         }
         setLoading(false);
-        
+
     }, [post, fetchPost, smartContract]);
 
     const votePost = useCallback(async (vote) => {
@@ -71,7 +88,7 @@ const Details = ({ match, history }) => {
         return <LoadingSpinner />;
     }
     return (
-        <>
+        <Wrapper>
             <h1 className="title">{post.title}</h1>
             <p>{post.excerpt}</p>
             <p>{moment.unix(post.created_at).format('MMM Do YYYY, h:mm:ss a')}</p>
@@ -80,25 +97,32 @@ const Details = ({ match, history }) => {
             <Html content={post.public_text} />
             {post.show_private ? (
                 <>
-                <Html content={post.private_text} />
-                <h4>Did you like it?</h4>
-                {liked === null && (
-                    <>
-                        <button onClick={likeClick}>Like</button>
-                        <button onClick={unlikeClick}>Unlike</button>
-                    </>
-                )}
-                {liked === true && <h5>Liked</h5>}
-                {liked === false && <h5>Didn't Like</h5>}
+                    <Html content={post.private_text} />
+                    <CenterBox>
+                        {liked === null && (
+                            <>
+                                <h4 className="pay-box-title">Did you like it?</h4>
+                                <Vote onClick={likeClick}>
+                                    <Like /> Like
+                                </Vote>
+                                <Vote onClick={unlikeClick}>
+                                    <Unlike /> Unlike
+                                </Vote>
+                            </>
+                        )}
+                        {liked === true && <h5><Like /> Liked</h5>}
+                        {liked === false && <h5><Unlike /> Didn't Like</h5>}
+                    </CenterBox>
+                    
                 </>
             ) : (
-                    <div>
-                        <h5>Costs {post.price} for the rest of the post</h5>
-                        <button className="btn btn-primary" onClick={onPayClick}>Pay</button>
-                    </div>
+                    <CenterBox>
+                        <h4 className="pay-box-title">Costs {post.price} PERL(s) for the rest of the post</h4>
+                        <button className="btn btn-primary btn-lg" onClick={onPayClick}>Send</button>
+                    </CenterBox>
                 )}
-            
-        </>
+
+        </Wrapper>
     );
 };
 

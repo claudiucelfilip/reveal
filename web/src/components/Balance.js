@@ -24,6 +24,7 @@ const Balance = ({ history }) => {
         setLoading(true);
         try {
             await smartContract.cashOut();
+            smartContract.notify('success', 'Your balance has been withdrawn')
             fetchBalance();
         } catch (err) {
             smartContract.notify('danger', err.message);
@@ -38,7 +39,7 @@ const Balance = ({ history }) => {
         <>
             <h1>Balance</h1>
             <p>Your posts earned you: {balance} PERL(s)</p>
-            <button className="btn btn-primary" onClick={onCashOut}>Cash Out</button>
+            <button className="btn btn-primary" onClick={onCashOut}>Withdraw</button>
         </>
     );
 };

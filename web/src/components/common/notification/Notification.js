@@ -23,13 +23,12 @@ const Notification = () => {
         }
 
         const title = notification.title || notificationTitles[notification.type];
-
         notificationRef.current.addNotification({
             insert: 'top',
             container: 'top-right',
             animationIn: ['animated', 'fadeIn'],
             animationOut: ['animated', 'fadeOut'],
-            dismiss: { duration: 0 },
+            dismiss: { duration: 5000 },
             dismissable: { click: true },
             ...notification,
             title

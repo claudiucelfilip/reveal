@@ -28,12 +28,12 @@ $grid-gutter-width: 60px;
   width: 100%;
 }
 main {
-  margin-top: 100px;
+  margin-top:70px;
 }
 nav {
   color: rgba(255, 255, 255, 0.75);
 
-  a {
+  a, .nav-link {
     cursor: pointer;
   }
 }
