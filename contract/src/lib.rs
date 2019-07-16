@@ -38,8 +38,8 @@ fn calculate_rating(post: &Post) -> i32 {
     rating
 }
 
-fn calculate_score(rating: i32, created_at: u32) -> f32 {
-    (rating as f32 / (created_at as f32 + 2.0)).powf(1.8)
+fn calculate_score(rating: i32, created_at: u32, curr_time: u32) -> f32 {
+    (rating as f32 / ((curr_time - created_at) as f32 + 2.0)).powf(1.8)
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -182,7 +182,8 @@ impl Blog {
         Ok(())
     }
 
-    fn get_posts(&mut self, _params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+    fn get_posts(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+        let curr_time: u32 = params.read();
         let posts: Vec<Value> = self
             .posts
             .iter()
@@ -196,7 +197,7 @@ impl Blog {
                     "owner": to_hex_string(post.owner),
                     "created_at": post.created_at,
                     "rating": rating,
-                    "score": calculate_score(rating, post.created_at),
+                    "score": calculate_score(rating, post.created_at, curr_time),
                 })
             })
             .collect();
@@ -241,7 +242,6 @@ impl Blog {
             "owner": to_hex_string(post.owner),
             "created_at": post.created_at,
             "rating": rating,
-            "score": calculate_score(rating, post.created_at),
             "voted": voted
         });
 

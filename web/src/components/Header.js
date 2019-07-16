@@ -44,7 +44,7 @@ const Header = ({ history }) => {
                     </li>
 
                     <li className="nav-item">
-                        <a className="nav-link" onClick={logOut}>Logout</a>
+                        <span className="nav-link" onClick={logOut}>Logout</span>
                     </li>
                 </ul>
             </div>

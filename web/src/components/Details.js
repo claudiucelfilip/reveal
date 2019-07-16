@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { withRouter, Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import SmartContract from '../SmartContract';
 import { observer } from 'mobx-react-lite';
 import Html from './common/Html';
@@ -93,7 +93,7 @@ const Details = ({ match, history }) => {
             ) : (
                     <div>
                         <h5>Costs {post.price} for the rest of the post</h5>
-                        <button onClick={onPayClick}>Pay</button>
+                        <button className="btn btn-primary" onClick={onPayClick}>Pay</button>
                     </div>
                 )}
             

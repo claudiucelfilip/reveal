@@ -5,8 +5,8 @@ import moment from 'moment';
 import JSBI from 'jsbi';
 const BigInt = JSBI.BigInt;
 
-const GAS_LIMIT = 1000000;
-const POST_CREATE_COST = 1000000;
+// const GAS_LIMIT = 1000000;
+// const POST_CREATE_COST = 1000000;
 
 class SmartContract {
     constructor() {
@@ -123,7 +123,11 @@ class SmartContract {
         const response = this.contract.test(
             this.wallet,
             'get_posts',
-            BigInt(0)
+            BigInt(0),
+            {
+                type: 'uint32',
+                value: moment.unix()
+            }
         );
 
         return this.parseResponse(response);

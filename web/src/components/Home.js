@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import SmartContract from '../SmartContract';
 import { Link, Redirect } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import Html from './common/Html';
 import TagList from './common/TagList';
+import moment from 'moment';
 
 const Home = () => {
     const smartContract = useContext(SmartContract);
@@ -29,15 +29,19 @@ const Home = () => {
     if (!smartContract.privateKey) {
         return <Redirect to="/login" />
     }
-    const filteredPosts = posts.filter(post => {
-        return !term || [post.title, post.tags, post.excerpt].join(' ').toLowerCase().includes(term);
-    });
+    const filteredPosts = posts
+        .filter(post => {
+            return !term || [post.title, post.tags, post.excerpt, post.owner].join(' ').toLowerCase().includes(term);
+        })
+        .sort((a = 0, b = 0) => {
+            return b.score - a.score;
+        });
     return (
         <>
             <div className="row">
                 <div className="pb-4 col-md-6">
                     <h5>Search</h5>
-                    <input type="text" placeholder="Enter Tag, Title, Excerpt" className="form-control" onChange={onSearch} />
+                    <input type="text" placeholder="Enter Tag, Title, Excerpt, Owner ID" className="form-control" onChange={onSearch} />
                 </div>
             </div>
             <div className="row d-flex flex-wrap">
@@ -46,6 +50,10 @@ const Home = () => {
                         <article className="col-md-4" key={post.id}>
                             <div className="content">
                                 <h2 className="title">{post.title}</h2>
+                                <p>
+                                    {post.rating} points by <span title={post.owner}>{post.owner.slice(0, 6)}</span>
+                                    {' '} - {moment.unix(post.created_at).fromNow()}
+                                </p>
                                 <TagList tags={post.tags} />
                                 <p className="excerpt">
                                     {post.excerpt}
