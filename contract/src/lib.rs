@@ -250,23 +250,6 @@ impl Blog {
         Ok(())
     }
 
-    fn upvote_post(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
-        let post_id: String = params.read();
-        let post = self
-            .posts
-            .iter_mut()
-            .find(|post| post.id == *post_id)
-            .unwrap();
-
-        if post.paid_viewers.contains(&params.sender) == false {
-            return Err(format!("{:?} isn't allowed to upvote", params.sender).into());
-        }
-
-        post.votes.insert(params.sender, 1);
-
-        Ok(())
-    }
-
     fn vote_post(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
         let post_id: String = params.read();
         let vote: u8 = params.read();
