@@ -28,7 +28,7 @@ export const CenterBox = styled.div`
     border: solid 1px #a9a9a9;
     text-align: center;
 
-    .pay-box-title {
+    .box-title {
         margin-bottom: 20px;
     }
 `;

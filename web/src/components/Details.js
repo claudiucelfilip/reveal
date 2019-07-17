@@ -111,7 +111,7 @@ const Details = ({ match, history }) => {
                             <CenterBox>
                                 {liked === null && (
                                     <>
-                                        <h4 className="pay-box-title">Did you like it?</h4>
+                                        <h4 className="box-title">Did you like it?</h4>
                                         <Vote onClick={likeClick}>
                                             <Like /> Like
                                 </Vote>
@@ -127,7 +127,7 @@ const Details = ({ match, history }) => {
                         </>
                     ) : (
                             <CenterBox>
-                                <h4 className="pay-box-title">Costs {post.price} PERL(s) for the rest of the post</h4>
+                                <h4 className="box-title">Costs {post.price} PERL(s) for the rest of the content</h4>
                                 <button className="btn btn-primary btn-lg" onClick={onPayClick}>Send</button>
                             </CenterBox>
                         )}

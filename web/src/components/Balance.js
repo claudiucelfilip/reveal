@@ -40,7 +40,7 @@ const Balance = ({ history }) => {
         <>
             <h1>Balance</h1>
             <CenterBox>
-                <h4 className="pay-box-title">Your posts earned you: {balance} PERL(s)</h4>
+                <h4 className="box-title">Your posts earned you: {balance} PERL(s)</h4>
                 <button className="btn btn-primary btn-lg" onClick={onCashOut}>Withdraw</button>
             </CenterBox>
         </>

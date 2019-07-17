@@ -1,7 +1,7 @@
 // Import Bootstrap and its default variables
 $grid-gutter-width: 60px;
-@import '~bootstrap/scss/bootstrap.scss';
-@import './sass/main.scss';
+@import "~bootstrap/scss/bootstrap.scss";
+@import "./sass/main.scss";
 
 * {
   box-sizing: border-box;
@@ -37,12 +37,17 @@ a {
   width: 100%;
 }
 main {
-  margin-top:70px;
+  margin-top: 70px;
 }
 nav {
   color: rgba(255, 255, 255, 0.75);
 
-  a, .nav-link {
+  a,
+  .nav-link {
     cursor: pointer;
   }
+}
+.hidden {
+  opacity: 0;
+  pointer-events: none;
 }

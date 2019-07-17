@@ -15,6 +15,8 @@ const ContractBox = styled.div`
 const ProtectedRoutes = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const smartContract = useContext(SmartContract);
+    const [contractId, setContractId] = useState(smartContract.contractId);
+    
 
     useEffect(() => {
         const initSmartContract = async () => {
@@ -30,13 +32,14 @@ const ProtectedRoutes = ({ children }) => {
     }, [smartContract]);
 
     const onContractChange = useCallback((event) => {
-        smartContract.contractId = event.target.value;
-    }, [smartContract]);
+        setContractId(event.target.value);
+    }, []);
 
     const changeContract = useCallback(async (event) => {
         event.preventDefault();
+        smartContract.contractId = contractId;
         window.location.reload();
-    }, []);
+    }, [smartContract, contractId]);
 
     if (loading) {
         return <LoadingSpinner />;
@@ -49,10 +52,10 @@ const ProtectedRoutes = ({ children }) => {
         
         <ContractBox>
             <label>Loaded Contract</label>
-            <div className="d-flex">
-                <input type="text" className="form-control mr-3" defaultValue={smartContract.contractId} onChange={onContractChange} />
+            <form className="d-flex">
+                <input type="text" className="form-control mr-3" defaultValue={contractId} onChange={onContractChange} />
                 <button type="submit" className="btn btn-primary" onClick={changeContract}>Reload</button>
-            </div>
+            </form>
         </ContractBox>
         
         {children}
