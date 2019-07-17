@@ -12,16 +12,25 @@ const Tag = styled.span`
     display: inline-block;
     font-size: 14px;
     margin: 0 10px 10px 0;
+
+    &.clickable {
+        cursor: pointer;
+    }
 `;
 
-const TagList = ({ tags }) => {
+const TagList = ({ tags, onTagClick }) => {
+    const onClickHandler = tag => () => {
+        if (onTagClick) {
+            onTagClick(tag);
+        }
+    };
     return (
         <Wrapper>
             {tags
                 .split('|')
                 .filter(tag => tag)
                 .map((tag, index) => (
-                    <Tag key={index}>{tag}</Tag>
+                    <Tag key={index} className={onTagClick ? 'clickable' : ''} onClick={onClickHandler(tag)}>{tag}</Tag>
                 ))}
         </Wrapper>
     );

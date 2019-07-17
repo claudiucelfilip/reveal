@@ -44,6 +44,7 @@ const getArticleClass = (post) => {
 const Home = () => {
     const smartContract = useContext(SmartContract);
     const [posts, setPosts] = useState([]);
+    const [term, setTerm] = useState();
     const listRef = useRef();
     const suffleRef = useRef();
 
@@ -58,7 +59,7 @@ const Home = () => {
                     buffer: 1,
                 });
 
-                suffleRef.current.on(Shuffle.EventType.LAYOUT, function () {
+                suffleRef.current.on(Shuffle.EventType.LAYOUT, () => {
                     listRef.current.classList.add('initialized');
                   });
                 
@@ -85,9 +86,17 @@ const Home = () => {
 
     const onSearch = useCallback((event) => {
         const term = event.target.value.toLowerCase();
-
-        suffleRef.current.filter(function (element) {
+        setTerm(term);
+        suffleRef.current.filter((element) => {
             return !term || element.innerText.toLowerCase().includes(term);
+        });
+    }, []);
+
+    const onTagClickHandle = useCallback((value) => {
+        const term = value.toLowerCase();
+        setTerm(term);
+        suffleRef.current.filter((element) => {
+            return element.innerText.toLowerCase().includes(term);
         });
     }, []);
 
@@ -100,7 +109,7 @@ const Home = () => {
             <div className="row">
                 <div className="pb-4 col-md-6">
                     <h5>Search</h5>
-                    <input type="text" placeholder="Enter Tag, Title, Excerpt, Owner ID" className="form-control js-shuffle-search" onChange={onSearch} />
+                    <input type="text" placeholder="Enter Tag, Title, Excerpt, Owner ID" className="form-control js-shuffle-search" value={term} onChange={onSearch} />
                 </div>
             </div>
             <ArticleList className="row" ref={listRef}>
@@ -119,7 +128,7 @@ const Home = () => {
                             <p className="excerpt">
                                 {post.excerpt}
                             </p>
-                            <TagList tags={post.tags} />
+                            <TagList tags={post.tags} onTagClick={onTagClickHandle} />
                             <p>
                                 <Link className="underlined" to={'/post/' + post.id}>Read More</Link>
                             </p>
