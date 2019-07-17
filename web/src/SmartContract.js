@@ -105,7 +105,6 @@ class SmartContract {
         if (this.accountPoll) {
             this.accountPoll.close();
         }
-        
     }
 
     parseResponse(response) {

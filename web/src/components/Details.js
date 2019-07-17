@@ -3,14 +3,20 @@ import { withRouter } from 'react-router-dom';
 import SmartContract from '../SmartContract';
 import { observer } from 'mobx-react-lite';
 import Html from './common/Html';
-import { Like, Unlike, CenterBox } from './common/core';
+import { Like, Unlike, CenterBox, Meta } from './common/core';
 import TagList from './common/TagList';
 import LoadingSpinner from './common/LoadingSpinner';
 import moment from 'moment';
 import styled from 'styled-components';
 
 const Wrapper = styled.article`
-    font-size: 16px;
+    font-size: 18px;
+    line-height: 1.8;
+
+    ${Meta} {
+        line-height: 1.6;
+        font-size: 16px;
+    }
 `;
 
 const Vote = styled.span`
@@ -90,38 +96,47 @@ const Details = ({ match, history }) => {
     return (
         <Wrapper>
             <h1 className="title">{post.title}</h1>
-            <p>{post.excerpt}</p>
-            <p>{moment.unix(post.created_at).format('MMM Do YYYY, h:mm:ss a')}</p>
-            <p>{post.owner}</p>
-            <TagList tags={post.tags} />
-            <Html content={post.public_text} />
-            {post.show_private ? (
-                <>
-                    <Html content={post.private_text} />
-                    <CenterBox>
-                        {liked === null && (
-                            <>
-                                <h4 className="pay-box-title">Did you like it?</h4>
-                                <Vote onClick={likeClick}>
-                                    <Like /> Like
+            
+            <div className="row">
+                <div className="col col-md-8">
+                    <Meta>
+                        {post.rating} points by <span title={post.owner}>{post.owner}</span>
+                        {' '} - {moment.unix(post.created_at).fromNow()}
+                    </Meta>
+                    <p>{post.excerpt}</p>
+                    <Html content={post.public_text} />
+                    {post.show_private ? (
+                        <>
+                            <Html content={post.private_text} />
+                            <CenterBox>
+                                {liked === null && (
+                                    <>
+                                        <h4 className="pay-box-title">Did you like it?</h4>
+                                        <Vote onClick={likeClick}>
+                                            <Like /> Like
                                 </Vote>
-                                <Vote onClick={unlikeClick}>
-                                    <Unlike /> Unlike
+                                        <Vote onClick={unlikeClick}>
+                                            <Unlike /> Unlike
                                 </Vote>
-                            </>
-                        )}
-                        {liked === true && <h5><Like /> Liked</h5>}
-                        {liked === false && <h5><Unlike /> Didn't Like</h5>}
-                    </CenterBox>
-                    
-                </>
-            ) : (
-                    <CenterBox>
-                        <h4 className="pay-box-title">Costs {post.price} PERL(s) for the rest of the post</h4>
-                        <button className="btn btn-primary btn-lg" onClick={onPayClick}>Send</button>
-                    </CenterBox>
-                )}
+                                    </>
+                                )}
+                                {liked === true && <h5><Like /> Liked</h5>}
+                                {liked === false && <h5><Unlike /> Didn't Like</h5>}
+                            </CenterBox>
 
+                        </>
+                    ) : (
+                            <CenterBox>
+                                <h4 className="pay-box-title">Costs {post.price} PERL(s) for the rest of the post</h4>
+                                <button className="btn btn-primary btn-lg" onClick={onPayClick}>Send</button>
+                            </CenterBox>
+                        )}
+                </div>
+                <div className="col col-md-4">
+                    <h5 className="mt-0">Tags</h5>
+                    <TagList tags={post.tags} />
+                </div>
+            </div>
         </Wrapper>
     );
 };

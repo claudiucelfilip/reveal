@@ -3,8 +3,17 @@ import SmartContract from '../SmartContract';
 import { Link, Redirect } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import TagList from './common/TagList';
+import { Meta } from './common/core';
 import moment from 'moment';
+import styled from 'styled-components';
 
+const Article = styled.article`
+    margin-bottom: 30px;
+    .title {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+`;
 const Home = () => {
     const smartContract = useContext(SmartContract);
     const [posts, setPosts] = useState([]);
@@ -44,26 +53,28 @@ const Home = () => {
                     <input type="text" placeholder="Enter Tag, Title, Excerpt, Owner ID" className="form-control" onChange={onSearch} />
                 </div>
             </div>
-            <div className="row d-flex flex-wrap">
+            <div className="row">
                 {filteredPosts
                     .map(post => (
-                        <article className="col-md-4" key={post.id}>
-                            <div className="content">
+                        <Article className="col col-12 col-lg-10" key={post.id}>
+                            <Link to={'/post/' + post.id}>
                                 <h2 className="title">{post.title}</h2>
-                                <p>
-                                    {post.rating} points by <span title={post.owner}>{post.owner.slice(0, 6)}</span>
-                                    {' '} - {moment.unix(post.created_at).fromNow()}
-                                </p>
-                                <TagList tags={post.tags} />
-                                <p className="excerpt">
-                                    {post.excerpt}
-                                </p>
-                                <p>
-                                    <Link className="btn btn-secondary" to={'/post/' + post.id}>Read More</Link>
-                                </p>
+                            </Link>
+                            <Meta>
+                                {post.rating} points by <span title={post.owner}>{post.owner.slice(0, 6)}</span>
+                                {' '} - {moment.unix(post.created_at).fromNow()}
+                            </Meta>
+                            
+                            <p className="excerpt">
+                                {post.excerpt}
+                            </p>
+                            <TagList tags={post.tags} />
+                            <p>
+                                <Link className="underlined" to={'/post/' + post.id}>Read More</Link>
+                            </p>
 
-                            </div>
-                        </article>
+
+                        </Article>
                     ))}
             </div>
         </>

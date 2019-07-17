@@ -14,7 +14,7 @@ const toolbarOptions = [
 
     [{ 'header': 1 }, { 'header': 2 }],               // custom button values
     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-    [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+    
     [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
     [{ 'direction': 'rtl' }],                         // text direction
 
@@ -84,7 +84,6 @@ const Create = ({ history }) => {
             modules: {
                 toolbar: toolbarOptions
             },
-            placeholder: 'Compose an epic...',
             theme: 'snow'  // or 'bubble'
         });
 
@@ -92,7 +91,6 @@ const Create = ({ history }) => {
             modules: {
                 toolbar: toolbarOptions
             },
-            placeholder: 'Compose an epic...',
             theme: 'snow'  // or 'bubble'
         });
     }, [smartContract]);
@@ -127,21 +125,7 @@ const Create = ({ history }) => {
                     <label>Title</label>
                     <input className="form-control" type="text" name="title"/>
                 </div>
-                <div className="form-group">
-                    <label>Tags</label>
-                    <ReactTags
-                        autofocus={false}
-                        tags={tags}
-                        delimiters={[188]}
-                        allowNew={true}
-                        addOnBlur={true}
-                        suggestions={suggestions}
-                        handleDelete={onDelete}
-                        minQueryLength={0}
-                        maxSuggestionsLength={suggestions.length}
-                        placeholder="Add comma separated tags"
-                        handleAddition={onAdd} />
-                </div>
+               
                 <div className="form-group">
                     <label>Excerpt</label>
                     <textarea className="form-control large-textarea" name="excerpt" />
@@ -158,11 +142,26 @@ const Create = ({ history }) => {
                     <div id="privateText" ref={privateTextRef} />
                 </div>
                 <div className="form-group">
+                    <label>Tags</label>
+                    <ReactTags
+                        autofocus={false}
+                        tags={tags}
+                        delimiters={[188]}
+                        allowNew={true}
+                        addOnBlur={true}
+                        suggestions={suggestions}
+                        handleDelete={onDelete}
+                        minQueryLength={0}
+                        maxSuggestionsLength={suggestions.length}
+                        placeholder="Add comma separated tags"
+                        handleAddition={onAdd} />
+                </div>
+                <div className="form-group">
                     <label>Price</label>
                     <input className="form-control" type="text" name="price" defaultValue={1000000} />
                 </div>
-                <div className="form-group">
-                    <button className="btn btn-primary" type="submit">Create</button>
+                <div className="form-group mt-4">
+                    <button className="btn btn-primary" type="submit">Publish</button>
                 </div>
             </form>
         </>

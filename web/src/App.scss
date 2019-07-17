@@ -7,6 +7,15 @@ $grid-gutter-width: 60px;
   box-sizing: border-box;
 }
 
+a {
+  color: inherit;
+}
+.underlined {
+  text-decoration: underline;
+}
+.container {
+  margin-bottom: 100px;
+}
 .article {
   display: flex;
   align-items: top;

@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect, useContext } from 'react';
-import LoadingSpinner  from './common/LoadingSpinner';
+import LoadingSpinner from './common/LoadingSpinner';
 import SmartContract from '../SmartContract';
+import { CenterBox } from './common/core';
 import { observer } from 'mobx-react-lite';
 
 const Balance = ({ history }) => {
@@ -38,8 +39,10 @@ const Balance = ({ history }) => {
     return (
         <>
             <h1>Balance</h1>
-            <p>Your posts earned you: {balance} PERL(s)</p>
-            <button className="btn btn-primary" onClick={onCashOut}>Withdraw</button>
+            <CenterBox>
+                <h4 className="pay-box-title">Your posts earned you: {balance} PERL(s)</h4>
+                <button className="btn btn-primary btn-lg" onClick={onCashOut}>Withdraw</button>
+            </CenterBox>
         </>
     );
 };
