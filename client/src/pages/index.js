@@ -1,21 +1,13 @@
 import React from "react";
-import { Link } from "gatsby";
 import { graphql } from "gatsby";
 import Layout from "../components/layout";
+import Home  from '../components/Home';
+
 
 const IndexPage = (props) => {
-  const postList = props.data.allRevealPost;
+  const postList = props.data.allRevealPost.edges.map(edge => edge.node);
   return (
-    <Layout>
-      {postList.edges.map(({ node }, i) => (
-        <Link to={node.id} className="link" >
-          <div className="post-list">
-            <h1>{node.title}</h1>
-            <p>{node.excerpt}</p>
-          </div>
-        </Link>
-      ))}
-    </Layout>
+    <Home posts={postList} />
   );
 }
 

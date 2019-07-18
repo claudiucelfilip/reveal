@@ -25,10 +25,10 @@ exports.sourceNodes = (
 
 
     const processPost = post => {
-        const nodeId = createNodeId(`reveal-post-${post.id}`);
+        // const nodeId = createNodeId(`reveal-post-${post.id}`);
         const nodeContent = JSON.stringify(post);
         const nodeData = Object.assign({}, post, {
-            id: nodeId,
+            // id: nodeId,
             parent: null,
             children: [],
             internal: {

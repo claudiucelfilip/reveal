@@ -7,6 +7,19 @@ const { createFilePath, createFileNode } = require(`gatsby-source-filesystem`)
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
 
+exports.onCreatePage = async ({ page, actions }) => {
+    const { createPage } = actions;
+  
+    // page.matchPath is a special key that's used for matching pages
+    // only on the client.
+    if (page.path.match(/^\/app/)) {
+      page.matchPath = `/app/*`;
+  
+      // Update the page.
+      createPage(page);
+  };
+};
+  
 // You can delete this file if you're not using it
 exports.createPages = ({ actions, graphql }) => {
     const { createPage } = actions;
@@ -36,7 +49,7 @@ exports.createPages = ({ actions, graphql }) => {
                 return reject(result.errors)
             }
 
-            const blogTemplate = path.resolve('./src/templates/blog-post.js');
+            const blogTemplate = path.resolve('./src/templates/details.js');
 
             result.data.allRevealPost.edges.forEach(({ node }) => {
                 createPage({
@@ -53,20 +66,6 @@ exports.createPages = ({ actions, graphql }) => {
     })
 }
 
-
-// exports.onCreateNode = ({ node, getNode, actions }) => {
-//     const { createNodeField } = actions
-//     if (node.internal.type === `RevealPost`) {
-//         const slug = createFilePath({ node, getNode, basePath: `pages` })
-//         createNodeField({
-//             node,
-//             name: `id`,
-//             value: slug,
-//         })
-
-//     }
-// }
-
 exports.onCreateNode = ({ node, getNode, actions }) => {
     const { createNodeField } = actions
     if (node.internal.type === `RevealPost`) {
@@ -78,3 +77,20 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
         })
     }
 }
+
+exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
+    if (stage === "build-html") {
+      actions.setWebpackConfig({
+        target : 'node',
+        module: {
+          rules: [
+            {
+              test: /quill/,
+              use: loaders.null(),
+            },
+          ],
+        },
+      })
+    }
+  }
+  
