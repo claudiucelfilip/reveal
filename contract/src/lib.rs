@@ -193,6 +193,7 @@ impl Blog {
                     "id": post.id.clone(),
                     "title": post.title.clone(),
                     "tags": post.tags.clone(),
+                    "public_text": post.public_text.clone(),
                     "excerpt": post.excerpt.clone(),
                     "owner": to_hex_string(post.owner),
                     "created_at": post.created_at,
