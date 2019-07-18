@@ -1,3 +1,8 @@
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+});
+
+
 module.exports = {
   siteMetadata: {
     title: `Gatsby Default Starter`,
@@ -39,8 +44,8 @@ module.exports = {
     {
       resolve: "gatsby-source-reveal",
       options: {
-        api_host: process.env.WAVELET_API_URL || "http://localhost:9000",
-        contract_id: process.env.CONTRACT_ID || "886761a66823f146716b1c1f63c38449ec95035e4c304fcf7e7f3f9d39ecd6c7"
+        api_host: process.env.WAVELET_API_URL,
+        contract_id: process.env.CONTRACT_ID
       },
     },
     {

@@ -8,7 +8,6 @@ const BigInt = JSBI.BigInt;
 const DEFAULT_PRIVATEKEY = '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
 class SmartContract {
-    
     async pollAccountUpdates(
         id
     ) {
@@ -64,8 +63,10 @@ class SmartContract {
     }
 
     async init() {
+        
+        this.contractId = process.env.CONTRACT_ID;
         this.defaultWallet = Wavelet.loadWalletFromPrivateKey(DEFAULT_PRIVATEKEY);
-        this.client = new Wavelet('http://127.0.0.1:9000');
+        this.client = new Wavelet(process.env.WAVELET_API_URL);
         this.contract = new Contract(this.client, this.contractId);
         await this.contract.init();
         this.initialized = true;
