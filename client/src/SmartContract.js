@@ -8,6 +8,9 @@ const BigInt = JSBI.BigInt;
 const DEFAULT_PRIVATEKEY = '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
 class SmartContract {
+    constructor() {
+        this.setContractId(localStorage.getItem('contractId') || process.env.CONTRACT_ID);
+    }
     async pollAccountUpdates(
         id
     ) {
@@ -28,12 +31,7 @@ class SmartContract {
     set privateKey(value) {
         localStorage.setItem('privateKey', value);
     }
-    get contractId() {
-        return localStorage.getItem('contractId');
-    }
-    set contractId(value) {
-        localStorage.setItem('contractId', value);
-    }
+    
     listenForApplied = (tag, txId) => {
         return new Promise(async (resolve, reject) => {
             const poll = await this.client.pollTransactions(
@@ -64,19 +62,17 @@ class SmartContract {
 
     async init() {
         
-        this.contractId = process.env.CONTRACT_ID;
         this.defaultWallet = Wavelet.loadWalletFromPrivateKey(DEFAULT_PRIVATEKEY);
         this.client = new Wavelet(process.env.WAVELET_API_URL);
         this.contract = new Contract(this.client, this.contractId);
         await this.contract.init();
-        this.initialized = true;
-
+        
         return this.login();
     }
 
-    updatedKeys(privateKey, contractId) {
-        this.privateKey = privateKey;
+    setContractId(contractId) {
         this.contractId = contractId;
+        localStorage.setItem('contractId', contractId);
     }
 
     hasKeys() {
@@ -216,7 +212,7 @@ class SmartContract {
         const response = await this.contract.call(
             this.wallet,
             'create_post',
-            BigInt(500000),
+            BigInt(100000),
             JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
             {
                 type: "string",

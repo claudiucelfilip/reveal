@@ -42,7 +42,7 @@ const getArticleClass = (post) => {
     }
     return `col-md-${sizeCount * 2 + 2}`;
 }
-const Home = ({posts: allPosts = []}) => {
+const Home = ({ posts: allPosts = [] }) => {
     const smartContract = useContext(SmartContract);
     const [posts, setPosts] = useState(allPosts);
     const [term, setTerm] = useState();
@@ -50,46 +50,40 @@ const Home = ({posts: allPosts = []}) => {
     const suffleRef = useRef();
 
     useEffect(() => {
-        if (!smartContract.initialized) {
-            return;
-        }
         const fetchData = async () => {
             try {
                 const posts = await smartContract.getPosts();
                 setPosts(posts);
-                if (!listRef.current) {
-                    return;
-                }
+
                 suffleRef.current = new Shuffle(listRef.current, {
                     itemSelector: '.article-item',
                     sizer: '.grid-sizer',
                     buffer: 1,
                 });
-
+        
                 suffleRef.current.on(Shuffle.EventType.LAYOUT, () => {
                     listRef.current.classList.add('initialized');
                 });
-                
+        
                 suffleRef.current.sort({
                     reverse: true,
                     by: (element) => {
                         return parseInt(element.getAttribute('data-score'));
                     }
                 });
-
+                
+                return () => {
+                    if (suffleRef.current) {
+                        suffleRef.current.destroy();
+                    }
+                }
             } catch (err) {
                 smartContract.notify('danger', err.message);
             }
         };
 
         fetchData();
-
-        return () => {
-            if (suffleRef.current) {
-                suffleRef.current.destroy();
-            }
-        }
-    }, [smartContract.initialized]);
+    }, [smartContract]);
 
     const onSearch = useCallback((event) => {
         const term = event.target.value.toLowerCase();
@@ -106,7 +100,7 @@ const Home = ({posts: allPosts = []}) => {
             return element.innerText.toLowerCase().includes(term);
         });
     }, []);
-   
+
     return (
         <Wrapper>
             <div className="row">

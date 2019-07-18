@@ -33,15 +33,13 @@ const Vote = styled.span`
 const Details = (props) => {
     const smartContract = useContext(SmartContract);
     const [post, setPost] = useState(props.data.revealPost);
-    const [loading, setLoading] = useState(!post);
+    const [loading, setLoading] = useState(typeof window !== 'undefined' ? true : false);
 
     const [liked, setLiked] = useState(null);
     const slug = props.pageContext.slug;
 
     const fetchPost = useCallback(async () => {
-        if (!smartContract.initialized) {
-            return;
-        }
+
         setLoading(true);
         try {
             const post = await smartContract.getPost(slug);
@@ -55,7 +53,7 @@ const Details = (props) => {
             // navigate('/');
         }
         setLoading(false);
-    }, [smartContract.initialized, slug]);
+    }, [smartContract, slug]);
 
     useEffect(() => {
         fetchPost();
@@ -78,6 +76,7 @@ const Details = (props) => {
         try {
             await smartContract.votePost(post.id, vote);
             setLiked(true);
+            smartContract.notify('success', 'Thank you for voting!');
         } catch (err) {
             smartContract.notify('danger', err.message);
         }
@@ -94,20 +93,20 @@ const Details = (props) => {
         votePost(false);
     }, [votePost]);
 
-    if (loading) {
+    if (loading || !post) {
         return <LoadingSpinner />;
     }
     return (
 
         <Wrapper>
             <h1 className="title">{post.title}</h1>
-
+            <Meta>
+                {post.rating} points by <span title={post.owner}>{post.owner}</span>
+                {' '} - {moment.unix(post.created_at).fromNow()}
+            </Meta>
             <div className="row">
                 <div className="col col-md-8">
-                    <Meta>
-                        {post.rating} points by <span title={post.owner}>{post.owner}</span>
-                        {' '} - {moment.unix(post.created_at).fromNow()}
-                    </Meta>
+
                     <p>{post.excerpt}</p>
                     <Html content={post.public_text} />
                     {post.show_private ? (
@@ -138,7 +137,7 @@ const Details = (props) => {
                     ) : (
                                 <CenterBox>
                                     <h4 className="box-title">You must login to view the rest of the content</h4>
-                                    <Link className="btn btn-primary btn-lg" to="/login" onClick={onPayClick}>Login</Link>
+                                    <Link className="btn btn-primary btn-lg" to="/login">Login</Link>
                                 </CenterBox>
                             )}
                 </div>

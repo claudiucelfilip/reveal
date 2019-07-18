@@ -1,12 +1,14 @@
 
 import React, { useEffect, useContext, useCallback, useState, memo } from 'react';
 import PropTypes from "prop-types";
+import { observer } from "mobx-react-lite";
 import Notification from './common/notification/Notification';
 import SmartContract from '../SmartContract';
 import Header from './header';
 import LoadingSpinner from './common/LoadingSpinner';
 import styled from 'styled-components';
 import { Location } from '@reach/router';
+import SEO from './seo';
 
 const ContractBox = styled.div`
     padding: 20px;
@@ -18,22 +20,12 @@ const ContractBox = styled.div`
 `;
 const Layout = (props) => {
   const { children } = props;
-  // const data = useStaticQuery(graphql`
-  //   query SiteTitleQuery {
-  //     site {
-  //       siteMetadata {
-  //         title
-  //       }
-  //     }
-  //   }
-  // `)
+ 
   const smartContract = useContext(SmartContract);
-  const [loading, setLoading] = useState(false);
-  const [contractId, setContractId] = useState();
-
+  const [loading, setLoading] = useState(typeof window !== 'undefined' ? true : false);
+  const [contractId, setContractId] = useState(smartContract.contractId);
 
   useEffect(() => {
-    setContractId(smartContract.contractId);
     const initSmartContract = async () => {
       setLoading(true);
       try {
@@ -44,7 +36,8 @@ const Layout = (props) => {
       setLoading(false);
     };
     initSmartContract();
-  }, [smartContract]);
+    
+  }, []);
 
   const onContractChange = useCallback((event) => {
     setContractId(event.target.value);
@@ -52,16 +45,17 @@ const Layout = (props) => {
 
   const changeContract = useCallback(async (event) => {
     event.preventDefault();
-    smartContract.contractId = contractId;
+    smartContract.setContractId(contractId);
     window.location.reload();
   }, [smartContract, contractId]);
 
   if (loading) {
     return <LoadingSpinner />;
   }
-  
+
   return (
     <>
+      <SEO title="Wavelet Reveal App"/>
       <Location>
         {props => <Header route={props} />}
       </Location>
@@ -72,7 +66,7 @@ const Layout = (props) => {
             <label>Loaded Contract</label>
             <form className="d-flex">
               <input type="text" className="form-control mr-3" defaultValue={contractId} onChange={onContractChange} />
-              <button type="submit" className="btn btn-primary" onClick={changeContract}>Reload</button>
+              <button type="submit" className="btn btn-primary" disabled={!contractId} onClick={changeContract}>Reload</button>
             </form>
           </ContractBox>
           {children}
@@ -87,4 +81,4 @@ Layout.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-export default Layout;
+export default observer(Layout);
