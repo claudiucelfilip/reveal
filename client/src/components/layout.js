@@ -3,7 +3,7 @@ import React, { useEffect, useContext, useCallback, useState, memo } from 'react
 import PropTypes from "prop-types";
 import Notification from './common/notification/Notification';
 import SmartContract from '../SmartContract';
-import Header from './Header';
+import Header from './header';
 import LoadingSpinner from './common/LoadingSpinner';
 import styled from 'styled-components';
 import { Location } from '@reach/router';
