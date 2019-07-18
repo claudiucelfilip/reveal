@@ -16,7 +16,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 
 static mut COUNTER: u32 = 0;
-static CREATE_POST_FEE: u64 = 500000;
+static CREATE_POST_FEE: u64 = 10000;
 
 fn generate_id() -> String {
     unsafe {

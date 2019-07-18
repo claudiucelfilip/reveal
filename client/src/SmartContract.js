@@ -212,7 +212,7 @@ class SmartContract {
         const response = await this.contract.call(
             this.wallet,
             'create_post',
-            BigInt(100000),
+            BigInt(10000),
             JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
             {
                 type: "string",
