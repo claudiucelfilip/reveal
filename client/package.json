@@ -15,6 +15,7 @@
     "fs": "0.0.1-security",
     "gatsby": "^2.13.25",
     "gatsby-image": "^2.2.6",
+    "gatsby-plugin-env-variables": "^1.0.1",
     "gatsby-plugin-layout": "^1.1.2",
     "gatsby-plugin-manifest": "^2.2.3",
     "gatsby-plugin-offline": "^2.2.4",
