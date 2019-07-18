@@ -142,6 +142,12 @@ const Create = () => {
                     {/* <textarea name="privateText" /> */}
                     <div id="privateText" ref={privateTextRef} />
                 </div>
+                <div className="row">
+                    <div className="form-group col col-md-6">
+                        <label>Price</label>
+                        <input className="form-control" type="text" name="price" defaultValue={10000} />
+                    </div>
+                </div>
                 <div className="form-group">
                     <label>Tags</label>
                     <ReactTags
@@ -157,11 +163,9 @@ const Create = () => {
                         placeholder="Add comma separated tags"
                         handleAddition={onAdd} />
                 </div>
-                <div className="form-group">
-                    <label>Price</label>
-                    <input className="form-control" type="text" name="price" defaultValue={1000000} />
-                </div>
+                
                 <div className="form-group mt-4">
+                    <p>There's a fixed 10,000 PERLs plus a per character fee to Publish a Post.</p>
                     <button className="btn btn-primary" type="submit">Publish</button>
                 </div>
             </form>

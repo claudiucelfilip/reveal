@@ -5,7 +5,11 @@ import Home  from '../components/Home';
 
 
 const IndexPage = (props) => {
-  const postList = props.data.allRevealPost.edges.map(edge => edge.node);
+  let postList;
+  if (props.data) {
+    postList = props.data.allRevealPost.edges.map(edge => edge.node);
+  }
+
   return (
     <Home posts={postList} />
   );

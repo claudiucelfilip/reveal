@@ -19,8 +19,8 @@ const Login = () => {
         event.preventDefault();
         if (privateKey) {
             smartContract.privateKey = privateKey;
-            await smartContract.init();
-            navigate('/')
+            await smartContract.login();
+            navigate('/');
         }
     }, [smartContract, privateKey]);
 
