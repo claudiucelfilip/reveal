@@ -3,7 +3,7 @@ import SmartContract from '../SmartContract';
 
 import { observer } from 'mobx-react-lite';
 import * as nacl from 'tweetnacl';
-import { navigate } from "gatsby";
+import { navigate } from 'gatsby';
 
 const Login = () => {
     const smartContract = useContext(SmartContract);

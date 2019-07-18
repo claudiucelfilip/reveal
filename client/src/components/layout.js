@@ -1,12 +1,12 @@
 
-import React, { useEffect, useContext, useCallback, useState, memo } from "react";
+import React, { useEffect, useContext, useCallback, useState, memo } from 'react';
 import PropTypes from "prop-types";
 import Notification from './common/notification/Notification';
 import SmartContract from '../SmartContract';
-import Header from "./Header";
+import Header from './Header';
 import LoadingSpinner from './common/LoadingSpinner';
 import styled from 'styled-components';
-import { Location } from "@reach/router";
+import { Location } from '@reach/router';
 
 const ContractBox = styled.div`
     padding: 20px;

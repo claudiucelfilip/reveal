@@ -1,6 +1,5 @@
 import React from "react"
-import { Location } from '@reach/router';
-import Details from "../templates/Details";
+import Details from "../templates/details";
 
 const NotFoundPage = (props) => { 
   return (

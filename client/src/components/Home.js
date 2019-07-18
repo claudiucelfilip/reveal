@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import SmartContract from '../SmartContract';
 
-import { Link } from "gatsby";
+import { Link } from 'gatsby';
 import { observer } from 'mobx-react-lite';
 import TagList from './common/TagList';
 import { Meta } from './common/core';
