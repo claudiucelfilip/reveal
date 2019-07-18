@@ -9,7 +9,10 @@ const DEFAULT_PRIVATEKEY = '0000000000000000000000000000000000000000000000000000
 
 class SmartContract {
     constructor() {
-        this.setContractId(localStorage.getItem('contractId') || process.env.CONTRACT_ID);
+        let contractId = process.env.CONTRACT_ID;
+        if (typeof localStorage !== 'undefined') {
+            this.setContractId(localStorage.getItem('contractId') || contractId);
+        }
     }
     async pollAccountUpdates(
         id
