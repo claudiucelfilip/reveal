@@ -1,4 +1,5 @@
 const PayloadBuilder = require('./payload-builder');
+const { TextDecoder } = require('util');
 
 class Contract {
     /**
@@ -98,7 +99,7 @@ class Contract {
         this.vm.instance.exports[func_name]();
 
         // Collect simulated execution results.
-        const res = {result: this.result, logs: this.logs};
+        const res = { result: this.result, logs: this.logs };
 
         // Reset the browser VM.
         new Uint8Array(this.vm.instance.exports.memory.buffer, 0, copy.byteLength).set(copy);
