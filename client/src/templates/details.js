@@ -16,7 +16,12 @@ const Wrapper = styled.article`
     ${Meta} {
         line-height: 1.6;
         font-size: 16px;
+        margin-bottom: 20px;
     }
+`;
+
+const Excerpt = styled.p`
+    font-size: 20px;
 `;
 
 const Vote = styled.span`
@@ -107,7 +112,7 @@ const Details = (props) => {
             <div className="row">
                 <div className="col col-md-8">
 
-                    <p>{post.excerpt}</p>
+                    <Excerpt>{post.excerpt}</Excerpt>
                     <Html content={post.public_text} />
                     {post.show_private ? (
                         <>
@@ -143,7 +148,7 @@ const Details = (props) => {
                 </div>
                 {post.tags && (
                     <div className="col col-md-4">
-                        <h5 className="mt-0">Tags</h5>
+                        <h5 className="mt-4">Tags</h5>
                         <TagList tags={post.tags} />
                     </div>
                 )}

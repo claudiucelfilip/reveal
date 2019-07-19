@@ -86,7 +86,7 @@ const Home = ({ posts: allPosts = [] }) => {
     }, [smartContract]);
 
     const onSearch = useCallback((event) => {
-        const term = event.target.value.toLowerCase();
+        const term = event.target.value.toLowerCase().trim();
         setTerm(term);
         suffleRef.current.filter((element) => {
             return !term || element.innerText.toLowerCase().includes(term);
@@ -94,7 +94,7 @@ const Home = ({ posts: allPosts = [] }) => {
     }, []);
 
     const onTagClickHandle = useCallback((value) => {
-        const term = value.toLowerCase();
+        const term = value.toLowerCase().trim();
         setTerm(term);
         suffleRef.current.filter((element) => {
             return element.innerText.toLowerCase().includes(term);

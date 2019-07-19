@@ -107,7 +107,7 @@ const Create = () => {
         if (!name.length) {
             return;
         }
-        const newTags = [...tags, tag];
+        const newTags = [...tags, name];
         setTags(newTags);
     }, [tags]);
 
