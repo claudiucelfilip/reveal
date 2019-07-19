@@ -27,7 +27,6 @@ const Layout = (props) => {
 
   useEffect(() => {
     const initSmartContract = async () => {
-      setLoading(true);
       try {
         await smartContract.init();
       } catch (err) {
