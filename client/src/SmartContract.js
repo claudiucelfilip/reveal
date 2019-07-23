@@ -185,6 +185,7 @@ class SmartContract {
             'add_private_viewer',
             BigInt(price),
             JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
+            BigInt(0),
             {
                 type: "string",
                 value: id
@@ -202,7 +203,8 @@ class SmartContract {
             this.wallet,
             'cash_out',
             BigInt(0),
-            JSBI.subtract(BigInt(this.account.balance), BigInt(2))
+            JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
+            BigInt(0)
         );
 
         return await this.listenForApplied(
@@ -216,7 +218,8 @@ class SmartContract {
             this.wallet,
             'create_post',
             BigInt(10000),
-            JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
+            JSBI.subtract(BigInt(this.account.balance), BigInt(10002)),
+            BigInt(0),
             {
                 type: "string",
                 value: data.title
@@ -257,6 +260,7 @@ class SmartContract {
             'vote_post',
             BigInt(0),
             JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
+            BigInt(0),
             {
                 type: 'string',
                 value: id
