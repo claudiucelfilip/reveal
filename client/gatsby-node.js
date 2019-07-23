@@ -1,5 +1,4 @@
 const path = require('path');
-const { createFilePath, createFileNode } = require(`gatsby-source-filesystem`)
 
 /**
  * Implement Gatsby's Node APIs in this file.
@@ -8,25 +7,32 @@ const { createFilePath, createFileNode } = require(`gatsby-source-filesystem`)
  */
 
 exports.onCreatePage = async ({ page, actions }) => {
-    const { createPage } = actions;
-  
-    // page.matchPath is a special key that's used for matching pages
-    // only on the client.
-    if (page.path.match(/^\/app/)) {
-      page.matchPath = `/app/*`;
-  
-      // Update the page.
-      createPage(page);
+  const { createPage } = actions;
+
+  // page.matchPath is a special key that's used for matching pages
+  // only on the client.
+  if (page.path.match(/^\/app/)) {
+    page.matchPath = `/app/*`;
+
+    // Update the page.
+    createPage(page);
   };
 };
-  
+
+const wrapper = promise =>
+  promise.then(result => {
+    if (result.errors) {
+      throw result.errors
+    }
+    return result
+  })
+
 // You can delete this file if you're not using it
-exports.createPages = ({ actions, graphql }) => {
-    const { createPage } = actions;
-
-    return new Promise((resolve, reject) => {
-
-        resolve(graphql(`
+exports.createPages = async ({ actions, graphql }) => {
+  const { createPage } = actions;
+  let allRevealPost = [];
+  try {
+    result = await wrapper(graphql(`
     {
         allRevealPost {
             edges {
@@ -42,55 +48,60 @@ exports.createPages = ({ actions, graphql }) => {
               }
             }
         }
-    }
-  `).then(result => {
-            if (result.errors) {
-                console.log(result.errors)
-                return reject(result.errors)
-            }
+    }  
+  `));
+    console.log('results', result);
+    allRevealPost = result.data.allRevealPost.edges;
+  } catch (err) {
+    console.warn(err);
+  }
 
-            const blogTemplate = path.resolve('./src/templates/details.js');
 
-            result.data.allRevealPost.edges.forEach(({ node }) => {
-                createPage({
-                    path: node.id,
-                    component: blogTemplate,
-                    context: {
-                        slug: node.id,
-                    }, // additional data can be passed via context
-                })
-            })
-            return
-        })
-        )
+  const blogTemplate = path.resolve('./src/templates/details.js');
+  createPage({
+    path: `/`,
+    component: require.resolve("./src/templates/index.js"),
+    context: { allRevealPost },
+  });
+
+  allRevealPost.forEach(({ node }) => {
+    createPage({
+      path: node.id,
+      component: blogTemplate,
+      context: {
+        slug: node.id,
+        revealPost: node
+      }, // additional data can be passed via context
     })
+  })
+
+
 }
 
 exports.onCreateNode = ({ node, getNode, actions }) => {
-    const { createNodeField } = actions
-    if (node.internal.type === `RevealPost`) {
-        const slug = node.id;
-        createNodeField({
-            node,
-            name: `slug`,
-            value: slug,
-        })
-    }
+  const { createNodeField } = actions
+  if (node.internal.type === `RevealPost`) {
+    const slug = node.id;
+    createNodeField({
+      node,
+      name: `slug`,
+      value: slug,
+    })
+  }
 }
 
 exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
-    if (stage === "build-html") {
-      actions.setWebpackConfig({
-        target : 'node',
-        module: {
-          rules: [
-            {
-              test: /quill/,
-              use: loaders.null(),
-            },
-          ],
-        },
-      })
-    }
+  if (stage === "build-html") {
+    actions.setWebpackConfig({
+      target: 'node',
+      module: {
+        rules: [
+          {
+            test: /quill/,
+            use: loaders.null(),
+          },
+        ],
+      },
+    })
   }
-  
+}

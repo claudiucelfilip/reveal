@@ -37,7 +37,7 @@ const Vote = styled.span`
 `;
 const Details = (props) => {
     const smartContract = useContext(SmartContract);
-    const [post, setPost] = useState(props.data.revealPost);
+    const [post, setPost] = useState(props.pageContext.revealPost);
     const [loading, setLoading] = useState(typeof window !== 'undefined' ? true : false);
 
     const [liked, setLiked] = useState(null);
@@ -125,7 +125,7 @@ const Details = (props) => {
                                             <Like /> Like
                                 </Vote>
                                         <Vote onClick={unlikeClick}>
-                                            <Unlike /> Unlike
+                                            <Unlike /> Don't Like
                                 </Vote>
                                     </>
                                 )}
@@ -159,15 +159,3 @@ const Details = (props) => {
 };
 
 export default observer(Details);
-
-export const query = graphql`
-query PostQuery($slug: String!) {
-    revealPost(id: {eq: $slug}) {
-        title,
-        excerpt,
-        owner,
-        created_at,
-        rating,
-        tags
-      }
-}`;

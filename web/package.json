@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@claudiucelfilip/wavelet-client": "^1.0.11",
+    "@claudiucelfilip/wavelet-client": "^1.1.1",
     "bootstrap": "^4.3.1",
     "dompurify": "^1.0.11",
     "jsbi": "^3.0.0",
