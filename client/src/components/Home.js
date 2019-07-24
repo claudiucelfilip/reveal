@@ -50,40 +50,40 @@ const Home = ({ posts: allPosts = [] }) => {
     const suffleRef = useRef();
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const posts = await smartContract.getPosts();
-                setPosts(posts);
+        try {
+            const posts = smartContract.getPosts();
+            setPosts(posts);
 
+            setTimeout(() => {
                 suffleRef.current = new Shuffle(listRef.current, {
                     itemSelector: '.article-item',
                     sizer: '.grid-sizer',
                     buffer: 1,
                 });
-        
+    
                 suffleRef.current.on(Shuffle.EventType.LAYOUT, () => {
                     listRef.current.classList.add('initialized');
                 });
-        
+    
                 suffleRef.current.sort({
                     reverse: true,
                     by: (element) => {
                         return parseInt(element.getAttribute('data-score'));
                     }
                 });
-                
-                return () => {
-                    if (suffleRef.current) {
-                        suffleRef.current.destroy();
-                    }
-                }
-            } catch (err) {
-                smartContract.notify('danger', err.message);
-            }
-        };
+            });
 
-        fetchData();
-    }, [smartContract]);
+            return () => {
+                if (suffleRef.current) {
+                    suffleRef.current.destroy();
+                }
+            };
+        } catch (err) {
+            smartContract.notify('danger', err.message);
+        }
+
+
+    }, []);
 
     const onSearch = useCallback((event) => {
         const term = event.target.value.toLowerCase().trim();

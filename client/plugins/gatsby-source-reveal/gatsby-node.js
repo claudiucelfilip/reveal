@@ -11,7 +11,6 @@ exports.sourceNodes = (
 ) => {
     const { createNode } = actions;
     const { api_host, contract_id } = configOptions;
-
     delete configOptions.plugins;
 
     const parseResponse = (response) => {
@@ -23,7 +22,6 @@ exports.sourceNodes = (
     const processPost = post => {
         const nodeContent = JSON.stringify(post);
         const nodeData = Object.assign({}, post, {
-            // id: nodeId,
             parent: null,
             children: [],
             internal: {

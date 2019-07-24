@@ -73,13 +73,11 @@ const Create = () => {
 
 
     useEffect(() => {
-        const fetchSuggestions = async () => {
-            const tags = await smartContract.getTags();
-            const newSuggestions = tags.reduce((acc, tag, index) => [...acc, { id: index, name: tag }], []);
-            setSuggestions(newSuggestions);
-        };
-
-        fetchSuggestions();
+        const tags = smartContract.getTags();
+        const newSuggestions = tags
+            .filter(tag => tag)
+            .reduce((acc, tag, index) => [...acc, { id: index, name: tag }], []);
+        setSuggestions(newSuggestions);
 
         quillPublicTextRef.current = new Quill(publicTextRef.current, {
             modules: {
@@ -103,11 +101,13 @@ const Create = () => {
     }, [tags]);
 
     const onAdd = useCallback((tag) => {
-        const name = tag.name.trim().toLowerCase();
-        if (!name.length) {
+        
+        tag.name = tag.name.trim().toLowerCase();
+        if (!tag.name.length) {
             return;
         }
-        const newTags = [...tags, name];
+        const newTags = [...tags, tag];
+
         setTags(newTags);
     }, [tags]);
 

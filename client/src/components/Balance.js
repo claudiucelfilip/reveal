@@ -9,11 +9,9 @@ const Balance = ({ history }) => {
     const [loading, setLoading] = useState(false);
     const [balance, setBalance] = useState();
 
-    const fetchBalance = useCallback(async () => {
-        setLoading(true);
-        const amount = await smartContract.getBalance();
+    const fetchBalance = useCallback(() => {
+        const amount = smartContract.getBalance();
         setBalance(amount);
-        setLoading(false);
     }, [smartContract]);
 
     useEffect(() => {

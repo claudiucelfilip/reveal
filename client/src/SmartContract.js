@@ -82,7 +82,6 @@ class SmartContract {
         return !!this.privateKey && !!this.contractId;
     }
 
-
     async login() {
         if (!this.privateKey) {
             throw Error('Missing privateKey');
@@ -125,8 +124,7 @@ class SmartContract {
         this.notification = {type, message};
     }
 
-    async getPosts() {
-        this.reloadMemory();
+    getPosts() {
         const wallet = this.wallet || this.defaultWallet;
         const response = this.contract.test(
             wallet,
@@ -137,12 +135,11 @@ class SmartContract {
                 value: moment.unix()
             }
         );
-
+        console.log('response', response);
         return this.parseResponse(response);
     }
 
-    async getBalance() {
-        this.reloadMemory();
+    getBalance() {
         const response = this.contract.test(
             this.wallet,
             'get_balance',
@@ -152,8 +149,7 @@ class SmartContract {
         return this.parseResponse(response);
     }
 
-    async getTags() {
-        this.reloadMemory();
+    getTags() {
         const response = this.contract.test(
             this.wallet,
             'get_tags',
@@ -163,8 +159,7 @@ class SmartContract {
         return this.parseResponse(response);
     }
 
-    async getPost(id) {
-        this.reloadMemory();
+    getPost(id) {
         const wallet = this.wallet || this.defaultWallet;
         const response = this.contract.test(
             wallet,
