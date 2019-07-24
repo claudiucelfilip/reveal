@@ -1,15 +1,12 @@
-const fetch = require("node-fetch");
-const queryString = require("query-string");
 const Contract = require('./src/contract');
-const Wavelet = require('./src/wavelet')
+const Wavelet = require('./src/wavelet');
 const JSBI = require('jsbi');
 const nacl = require('tweetnacl');
 
 const BigInt = JSBI.BigInt;
 
-
 exports.sourceNodes = (
-    { actions, createNodeId, createContentDigest },
+    { actions, createContentDigest },
     configOptions
 ) => {
     const { createNode } = actions;
@@ -23,9 +20,7 @@ exports.sourceNodes = (
         return data;
     };
 
-
     const processPost = post => {
-        // const nodeId = createNodeId(`reveal-post-${post.id}`);
         const nodeContent = JSON.stringify(post);
         const nodeData = Object.assign({}, post, {
             // id: nodeId,

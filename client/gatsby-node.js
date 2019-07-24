@@ -56,13 +56,13 @@ exports.createPages = async ({ actions, graphql }) => {
     console.warn(err);
   }
 
-
-  const blogTemplate = path.resolve('./src/templates/details.js');
   createPage({
-    path: `/`,
-    component: require.resolve("./src/templates/index.js"),
+    path: '/',
+    component: require.resolve('./src/templates/index.js'),
     context: { allRevealPost },
   });
+
+  const blogTemplate = path.resolve('./src/templates/details.js');
 
   allRevealPost.forEach(({ node }) => {
     createPage({
@@ -71,11 +71,9 @@ exports.createPages = async ({ actions, graphql }) => {
       context: {
         slug: node.id,
         revealPost: node
-      }, // additional data can be passed via context
-    })
-  })
-
-
+      } // additional data can be passed via context
+    });
+  });
 }
 
 exports.onCreateNode = ({ node, getNode, actions }) => {
