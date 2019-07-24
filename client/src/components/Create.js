@@ -70,8 +70,6 @@ const Create = () => {
         setLoading(false);
     }, [smartContract, tags]);
 
-
-
     useEffect(() => {
         const tags = smartContract.getTags();
         const newSuggestions = tags

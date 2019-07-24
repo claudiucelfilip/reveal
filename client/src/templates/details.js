@@ -43,11 +43,9 @@ const Details = (props) => {
     const [liked, setLiked] = useState(null);
     const slug = props.pageContext.slug;
 
-    const fetchPost = useCallback(async () => {
-
-        setLoading(true);
+    const fetchPost = useCallback(() => {
         try {
-            const post = await smartContract.getPost(slug);
+            const post = smartContract.getPost(slug);
             if (post.voted) {
                 const postLiked = post.voted === 1 ? true : false;
                 setLiked(postLiked);
@@ -55,13 +53,13 @@ const Details = (props) => {
             setPost(post);
         } catch (err) {
             smartContract.notify('danger', err.message);
-            // navigate('/');
         }
-        setLoading(false);
+
     }, [smartContract, slug]);
 
     useEffect(() => {
         fetchPost();
+        setLoading(false);
     }, [fetchPost]);
 
     const onPayClick = useCallback(async (event) => {
@@ -102,7 +100,6 @@ const Details = (props) => {
         return <LoadingSpinner />;
     }
     return (
-
         <Wrapper>
             <h1 className="title">{post.title}</h1>
             <Meta>
@@ -123,10 +120,10 @@ const Details = (props) => {
                                         <h4 className="box-title">Did you like it?</h4>
                                         <Vote onClick={likeClick}>
                                             <Like /> Like
-                                </Vote>
+                                        </Vote>
                                         <Vote onClick={unlikeClick}>
                                             <Unlike /> Don't Like
-                                </Vote>
+                                        </Vote>
                                     </>
                                 )}
                                 {liked === true && <h5><Like /> Liked</h5>}
@@ -154,7 +151,6 @@ const Details = (props) => {
                 )}
             </div>
         </Wrapper>
-
     );
 };
 
