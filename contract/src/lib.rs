@@ -1,5 +1,3 @@
-use std::error::Error;
-
 extern crate array_tool;
 
 use array_tool::vec::Union;
@@ -16,7 +14,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 
 static mut COUNTER: u32 = 0;
-static CREATE_POST_FEE: u64 = 500000;
+static CREATE_POST_FEE: u64 = 10000;
 
 fn generate_id() -> String {
     unsafe {
@@ -74,9 +72,9 @@ impl Blog {
         }
     }
 
-    fn create_post(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+    fn create_post(&mut self, params: &mut Parameters) -> Result<(), String> {
         if params.amount < CREATE_POST_FEE {
-            return Err(format!("{} PERLs are needed to Create a Post", CREATE_POST_FEE).into());
+            return Err(format!("{} PERLs are needed to Create a Post", CREATE_POST_FEE).to_string());
         }
         let blog_owner_balance = match self.balances.get(&self.blog_owner) {
             Some(balance) => *balance,
@@ -114,7 +112,7 @@ impl Blog {
         Ok(())
     }
 
-    fn get_balance(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+    fn get_balance(&mut self, params: &mut Parameters) -> Result<(), String> {
         let sender_balance = match self.balances.get(&params.sender) {
             Some(balance) => *balance,
             None => 0,
@@ -125,7 +123,7 @@ impl Blog {
         Ok(())
     }
 
-    fn get_tags(&mut self, _params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+    fn get_tags(&mut self, _params: &mut Parameters) -> Result<(), String> {
         let output: Vec<String> = vec![];
         let tags: Vec<String> = self.posts.iter().fold(output, |acc, post| -> Vec<String> {
             let tags = post.tags.split("|").map(String::from).collect();
@@ -137,19 +135,18 @@ impl Blog {
 
         Ok(())
     }
-    fn cash_out(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+    fn cash_out(&mut self, params: &mut Parameters) -> Result<(), String> {
         let sender_balance = match self.balances.get(&params.sender) {
             Some(balance) => *balance,
             None => 0,
         };
         if sender_balance == 0 {
-            return Err("Sender has no PERLS".into());
+            return Err("Sender has no PERLS".to_string());
         }
         Transfer {
             destination: params.sender,
             amount: sender_balance,
-            func_name: vec![],
-            func_params: vec![],
+            invocation: None,
         }
         .send_transaction();
 
@@ -158,7 +155,7 @@ impl Blog {
         Ok(())
     }
 
-    fn add_private_viewer(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+    fn add_private_viewer(&mut self, params: &mut Parameters) -> Result<(), String> {
         let post_id: String = params.read();
         let post = self
             .posts
@@ -167,7 +164,7 @@ impl Blog {
             .unwrap();
 
         if post.paid_viewers.contains(&params.sender) {
-            return Err(format!("{:?} already paid", params.sender).into());
+            return Err(format!("{:?} already paid", params.sender).to_string());
         }
 
         let post_owner_balance = match self.balances.get(&post.owner) {
@@ -182,7 +179,7 @@ impl Blog {
         Ok(())
     }
 
-    fn get_posts(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+    fn get_posts(&mut self, params: &mut Parameters) -> Result<(), String> {
         let curr_time: u32 = params.read();
         let posts: Vec<Value> = self
             .posts
@@ -193,6 +190,7 @@ impl Blog {
                     "id": post.id.clone(),
                     "title": post.title.clone(),
                     "tags": post.tags.clone(),
+                    "public_text": post.public_text.clone(),
                     "excerpt": post.excerpt.clone(),
                     "owner": to_hex_string(post.owner),
                     "created_at": post.created_at,
@@ -207,7 +205,7 @@ impl Blog {
         Ok(())
     }
 
-    fn get_post_details(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+    fn get_post_details(&mut self, params: &mut Parameters) -> Result<(), String> {
         let post_id: String = params.read();
 
         let post = self
@@ -250,7 +248,7 @@ impl Blog {
         Ok(())
     }
 
-    fn vote_post(&mut self, params: &mut Parameters) -> Result<(), Box<dyn Error>> {
+    fn vote_post(&mut self, params: &mut Parameters) -> Result<(), String> {
         let post_id: String = params.read();
         let vote: u8 = params.read();
 
@@ -261,7 +259,7 @@ impl Blog {
             .unwrap();
 
         if post.paid_viewers.contains(&params.sender) == false {
-            return Err(format!("{:?} isn't allowed to downvote", params.sender).into());
+            return Err(format!("{:?} isn't allowed to downvote", params.sender).to_string());
         }
 
         match vote {

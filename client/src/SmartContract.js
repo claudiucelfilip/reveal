@@ -5,14 +5,15 @@ import moment from 'moment';
 import JSBI from 'jsbi';
 const BigInt = JSBI.BigInt;
 
-// const GAS_LIMIT = 1000000;
-// const POST_CREATE_COST = 1000000;
+const DEFAULT_PRIVATEKEY = '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
 class SmartContract {
     constructor() {
-        this.client = new Wavelet('https://testnet.perlin.net');
+        let contractId = process.env.CONTRACT_ID;
+        if (typeof localStorage !== 'undefined') {
+            this.setContractId(localStorage.getItem('contractId') || contractId);
+        }
     }
-
     async pollAccountUpdates(
         id
     ) {
@@ -33,12 +34,7 @@ class SmartContract {
     set privateKey(value) {
         localStorage.setItem('privateKey', value);
     }
-    get contractId() {
-        return localStorage.getItem('contractId');
-    }
-    set contractId(value) {
-        localStorage.setItem('contractId', value);
-    }
+    
     listenForApplied = (tag, txId) => {
         return new Promise(async (resolve, reject) => {
             const poll = await this.client.pollTransactions(
@@ -68,24 +64,23 @@ class SmartContract {
     }
 
     async init() {
-        if (!this.contractId || !this.privateKey) {
-            throw Error('Missing contractID or privateKey');
-        }
-
-        await this.login();
+        
+        this.defaultWallet = Wavelet.loadWalletFromPrivateKey(DEFAULT_PRIVATEKEY);
+        this.client = new Wavelet(process.env.WAVELET_API_URL);
         this.contract = new Contract(this.client, this.contractId);
         await this.contract.init();
+        
+        return this.login();
     }
 
-    updatedKeys(privateKey, contractId) {
-        this.privateKey = privateKey;
+    setContractId(contractId) {
         this.contractId = contractId;
+        localStorage.setItem('contractId', contractId);
     }
 
     hasKeys() {
         return !!this.privateKey && !!this.contractId;
     }
-
 
     async login() {
         if (!this.privateKey) {
@@ -102,6 +97,7 @@ class SmartContract {
     logout() {
         this.wallet = null;
         this.privateKey = '';
+        this.account = null;
         if (this.accountPoll) {
             this.accountPoll.close();
         }
@@ -128,10 +124,10 @@ class SmartContract {
         this.notification = {type, message};
     }
 
-    async getPosts() {
-        this.reloadMemory();
+    getPosts() {
+        const wallet = this.wallet || this.defaultWallet;
         const response = this.contract.test(
-            this.wallet,
+            wallet,
             'get_posts',
             BigInt(0),
             {
@@ -139,12 +135,11 @@ class SmartContract {
                 value: moment.unix()
             }
         );
-
+        console.log('response', response);
         return this.parseResponse(response);
     }
 
-    async getBalance() {
-        this.reloadMemory();
+    getBalance() {
         const response = this.contract.test(
             this.wallet,
             'get_balance',
@@ -154,8 +149,7 @@ class SmartContract {
         return this.parseResponse(response);
     }
 
-    async getTags() {
-        this.reloadMemory();
+    getTags() {
         const response = this.contract.test(
             this.wallet,
             'get_tags',
@@ -165,10 +159,10 @@ class SmartContract {
         return this.parseResponse(response);
     }
 
-    async getPost(id) {
-        this.reloadMemory();
+    getPost(id) {
+        const wallet = this.wallet || this.defaultWallet;
         const response = this.contract.test(
-            this.wallet,
+            wallet,
             'get_post_details',
             BigInt(0),
             {
@@ -186,6 +180,7 @@ class SmartContract {
             'add_private_viewer',
             BigInt(price),
             JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
+            BigInt(0),
             {
                 type: "string",
                 value: id
@@ -203,7 +198,8 @@ class SmartContract {
             this.wallet,
             'cash_out',
             BigInt(0),
-            JSBI.subtract(BigInt(this.account.balance), BigInt(2))
+            JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
+            BigInt(0)
         );
 
         return await this.listenForApplied(
@@ -217,7 +213,8 @@ class SmartContract {
             this.wallet,
             'create_post',
             BigInt(10000),
-            JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
+            JSBI.subtract(BigInt(this.account.balance), BigInt(10002)),
+            BigInt(0),
             {
                 type: "string",
                 value: data.title
@@ -258,6 +255,7 @@ class SmartContract {
             'vote_post',
             BigInt(0),
             JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
+            BigInt(0),
             {
                 type: 'string',
                 value: id

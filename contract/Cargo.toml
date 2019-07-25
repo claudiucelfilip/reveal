@@ -13,8 +13,8 @@ lto = true
 crate-type = ["cdylib"]
 
 [dependencies]
-smart-contract = "0.1.0"
-smart-contract-macros = "0.1.0"
+smart-contract = "0.2.0"
+smart-contract-macros = "0.2.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 array_tool = "1.0"

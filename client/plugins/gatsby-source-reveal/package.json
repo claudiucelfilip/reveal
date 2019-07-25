@@ -1,0 +1,17 @@
+{
+  "name": "gatsby-source-reveal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gatsby-node.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+    "query-string": "^6.8.1",
+    "wavelet-client": "^1.0.10"
+  }
+}
