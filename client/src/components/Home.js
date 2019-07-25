@@ -23,7 +23,7 @@ const Wrapper = styled.div`
     
 `;
 const ArticleList = styled.div`
-    ${Article} {
+    &.client ${Article} {
         opacity: 0 !important;
     }
     &.initialized {
@@ -50,6 +50,7 @@ const Home = ({ posts: allPosts = [] }) => {
     const suffleRef = useRef();
 
     useEffect(() => {
+        listRef.current.classList.add('client');
         try {
             const posts = smartContract.getPosts();
             setPosts(posts);

@@ -5,13 +5,32 @@ const nacl = require('tweetnacl');
 
 const BigInt = JSBI.BigInt;
 
+exports.createSchemaCustomization = ({ actions }) => {
+    const { createTypes } = actions
+    const typeDefs = `
+      type RevealPost implements Node {
+        title: String,
+        owner: String,
+        rating: Int,
+        score: Float,
+        tags: String,
+        public_text: String,
+        excerpt: String,
+        created_at: Int
+      }
+    `;
+    createTypes(typeDefs);
+};
+
 exports.sourceNodes = (
     { actions, createContentDigest },
     configOptions
 ) => {
     const { createNode } = actions;
+
     const { api_host, contract_id } = configOptions;
     delete configOptions.plugins;
+    console.log('configOptions', configOptions);
 
     const parseResponse = (response) => {
         const { logs } = response;
@@ -51,9 +70,10 @@ exports.sourceNodes = (
                 value: Math.floor(new Date() / 1000)
             }
         );
+
         parseResponse(response).forEach(post => {
             const nodeData = processPost(post);
-            // Use Gatsby's createNode helper to create a node from the node data
+            
             createNode(nodeData);
         });
     });

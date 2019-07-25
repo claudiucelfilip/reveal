@@ -43,6 +43,7 @@ exports.createPages = async ({ actions, graphql }) => {
                 score
                 tags
                 title
+                public_text
                 excerpt
                 created_at
               }
@@ -50,7 +51,6 @@ exports.createPages = async ({ actions, graphql }) => {
         }
     }  
   `));
-    console.log('results', result);
     allRevealPost = result.data.allRevealPost.edges;
   } catch (err) {
     console.warn(err);
