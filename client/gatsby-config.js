@@ -45,7 +45,7 @@ module.exports = {
       resolve: "gatsby-source-reveal",
       options: {
         api_host: process.env.WAVELET_API_URL || 'https://testnet.perlin.net',
-          contract_id: 'e78898479903bcc0ec696269fe3df0aee02b46a303d42f6133017fe3b2fc5786' // process.env.CONTRACT_ID ||
+          contract_id: '71a7ac6292daab230f613890c3564afc13c9e5d7b68495ffe3e4faab0a35f7b3' // process.env.CONTRACT_ID ||
       },
     },
     {
