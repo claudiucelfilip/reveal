@@ -1,4 +1,4 @@
-import { Wavelet, Contract, TAG_TRANSFER } from '@claudiucelfilip/wavelet-client';
+import { Wavelet, Contract, TAG_TRANSFER } from 'wavelet-client';
 import { createContext } from 'react';
 import { decorate, observable } from 'mobx';
 import moment from 'moment';

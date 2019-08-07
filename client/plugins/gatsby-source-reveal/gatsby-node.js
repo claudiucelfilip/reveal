@@ -1,5 +1,4 @@
-const Contract = require('./src/contract');
-const Wavelet = require('./src/wavelet');
+const { Contract, Wavelet } = require('wavelet-client');
 const JSBI = require('jsbi');
 const nacl = require('tweetnacl');
 
