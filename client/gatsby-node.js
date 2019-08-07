@@ -64,6 +64,15 @@ exports.createPages = async ({ actions, graphql }) => {
 
   const blogTemplate = path.resolve('./src/templates/details.js');
 
+  createPage({
+    path: '/0',
+    component: blogTemplate,
+    context: { 
+      slug: '0',
+      revealPost: {}
+     }
+  });
+
   allRevealPost.forEach(({ node }) => {
     createPage({
       path: node.id,

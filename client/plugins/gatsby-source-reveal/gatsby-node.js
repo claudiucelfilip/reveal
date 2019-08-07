@@ -30,7 +30,7 @@ exports.sourceNodes = (
 
     const { api_host, contract_id } = configOptions;
     delete configOptions.plugins;
-    console.log('configOptions', configOptions);
+
 
     const parseResponse = (response) => {
         const { logs } = response;
@@ -50,13 +50,11 @@ exports.sourceNodes = (
             },
         })
         return nodeData;
-    }
+    };
 
     const client = new Wavelet(api_host);
     const generatedKeys = nacl.sign.keyPair();
     const secretKey = Buffer.from(generatedKeys.secretKey).toString("hex");
-
-
     const wallet = Wavelet.loadWalletFromPrivateKey(secretKey);
     const contract = new Contract(client, contract_id);
 
@@ -73,7 +71,6 @@ exports.sourceNodes = (
 
         parseResponse(response).forEach(post => {
             const nodeData = processPost(post);
-            
             createNode(nodeData);
         });
     });
