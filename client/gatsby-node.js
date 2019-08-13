@@ -56,6 +56,12 @@ exports.createPages = async ({ actions, graphql }) => {
     console.warn(err);
   }
 
+  createPage({
+    path: '/',
+    component: require.resolve('./src/templates/index.js'),
+    context: { allRevealPost },
+  });
+
   const blogTemplate = path.resolve('./src/templates/details.js');
 
   createPage({
@@ -72,7 +78,8 @@ exports.createPages = async ({ actions, graphql }) => {
       path: node.id,
       component: blogTemplate,
       context: {
-        slug: node.id
+        slug: node.id,
+        revealPost: node
       } // additional data can be passed via context
     });
   });
