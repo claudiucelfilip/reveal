@@ -69,7 +69,7 @@ const Home = ({ posts: allPosts = [] }) => {
                 suffleRef.current.sort({
                     reverse: true,
                     by: (element) => {
-                        return parseInt(element.getAttribute('data-score'));
+                        return parseFloat(element.getAttribute('data-score') || "0");
                     }
                 });
             });

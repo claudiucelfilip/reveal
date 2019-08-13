@@ -174,22 +174,24 @@ class SmartContract {
         return this.parseResponse(response);
     }
 
-    async payPost(id, price) {
+    async payPost(id, amount) {
+        const price = BigInt(amount);
+        const fee = BigInt(2);
+        const gasLimit = JSBI.add(price, fee);
         const response = await this.contract.call(
             this.wallet,
             'add_private_viewer',
             BigInt(price),
-            JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
+            JSBI.subtract(BigInt(this.account.balance), gasLimit),
             BigInt(0),
             {
                 type: "string",
                 value: id
             }
         );
-
         return await this.listenForApplied(
             TAG_TRANSFER,
-            response.id
+            response.tx_id
         ).then(this.reloadMemory);
     }
 
@@ -204,7 +206,7 @@ class SmartContract {
 
         return await this.listenForApplied(
             TAG_TRANSFER,
-            response.id
+            response.tx_id
         ).then(this.reloadMemory);
     }
 
@@ -245,7 +247,7 @@ class SmartContract {
 
         return await this.listenForApplied(
             TAG_TRANSFER,
-            response.id
+            response.tx_id
         ).then(this.reloadMemory);
     }
 
@@ -268,7 +270,7 @@ class SmartContract {
 
         return await this.listenForApplied(
             TAG_TRANSFER,
-            response.id
+            response.tx_id
         ).then(this.reloadMemory);
     }
 }
