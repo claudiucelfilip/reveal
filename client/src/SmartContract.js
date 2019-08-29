@@ -200,7 +200,7 @@ class SmartContract {
             this.wallet,
             'cash_out',
             BigInt(0),
-            JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
+            JSBI.subtract(BigInt(this.account.balance), BigInt(4)),
             BigInt(0)
         );
 
@@ -215,7 +215,7 @@ class SmartContract {
             this.wallet,
             'create_post',
             BigInt(10000),
-            JSBI.subtract(BigInt(this.account.balance), BigInt(10002)),
+            JSBI.subtract(BigInt(this.account.balance), BigInt(100000)),
             BigInt(0),
             {
                 type: "string",
@@ -256,7 +256,7 @@ class SmartContract {
             this.wallet,
             'vote_post',
             BigInt(0),
-            JSBI.subtract(BigInt(this.account.balance), BigInt(2)),
+            JSBI.subtract(BigInt(this.account.balance), BigInt(4)),
             BigInt(0),
             {
                 type: 'string',
