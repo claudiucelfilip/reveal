@@ -66,7 +66,7 @@ class SmartContract {
     async init() {
         
         this.defaultWallet = Wavelet.loadWalletFromPrivateKey(DEFAULT_PRIVATEKEY);
-        this.client = new Wavelet(process.env.WAVELET_API_URL);
+        this.client = new Wavelet(process.env.WAVELET_API_URL || 'https://testnet.perlin.net');
         this.contract = new Contract(this.client, this.contractId);
         await this.contract.init();
         
