@@ -9,7 +9,7 @@ const DEFAULT_PRIVATEKEY = '0000000000000000000000000000000000000000000000000000
 
 class SmartContract {
     constructor() {
-        let contractId = "ae5ee7cd1500214743153c7d416ae0402f17e1f1bb60ce92380d9b7f84cff78b";// process.env.CONTRACT_ID;
+        let contractId = "2cda085c03fdcacf00259d4df7381ae1d688b62eabcea38eccc219832988378f";// process.env.CONTRACT_ID;
         if (typeof localStorage !== 'undefined') {
             this.setContractId(localStorage.getItem('contractId') || contractId);
         }
@@ -66,7 +66,7 @@ class SmartContract {
     async init() {
         
         this.defaultWallet = Wavelet.loadWalletFromPrivateKey(DEFAULT_PRIVATEKEY);
-        this.client = new Wavelet(process.env.WAVELET_API_URL || 'https://testnet.perlin.net');
+        this.client = new Wavelet(process.env.WAVELET_API_URL || 'https://devnet.perlin.net');
         this.contract = new Contract(this.client, this.contractId);
         await this.contract.init();
         
