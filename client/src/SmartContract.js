@@ -9,7 +9,7 @@ const DEFAULT_PRIVATEKEY = '0000000000000000000000000000000000000000000000000000
 
 class SmartContract {
     constructor() {
-        let contractId = "2cda085c03fdcacf00259d4df7381ae1d688b62eabcea38eccc219832988378f";// process.env.CONTRACT_ID;
+        let contractId = "8b5352def100815d24dc1cefdc05943c291fd1a94a77b59f0e3841cff0f1329e";// process.env.CONTRACT_ID;
         if (typeof localStorage !== 'undefined') {
             this.setContractId(localStorage.getItem('contractId') || contractId);
         }
