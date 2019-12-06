@@ -5,7 +5,6 @@
   "version": "0.1.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
-    "wavelet-client": "2.0.0-rc.3",
     "axios": "^0.19.0",
     "babel-plugin-styled-components": "^1.10.6",
     "bootstrap": "^4.3.1",
@@ -43,7 +42,8 @@
     "shufflejs": "^5.2.2",
     "styled-components": "^4.3.2",
     "tls": "0.0.1",
-    "tweetnacl": "^1.0.1"
+    "tweetnacl": "^1.0.1",
+    "wavelet-client": "2.0.0-rc.4"
   },
   "devDependencies": {
     "prettier": "^1.18.2"
