@@ -10,6 +10,7 @@
     "bootstrap": "^4.3.1",
     "browser-monads": "^1.0.0",
     "child_process": "^1.0.2",
+    "contract-deployer": "https://github.com/claudiucelfilip/contract-deployer.git",
     "dompurify": "^1.0.11",
     "fs": "0.0.1-security",
     "gatsby": "^2.13.25",
@@ -58,7 +59,9 @@
     "format": "prettier --write src/**/*.{js,jsx}",
     "start": "npm run develop",
     "serve": "gatsby serve",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\""
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\"",
+    "deploy": "npm run deploy:contract && npm run build",
+    "deploy:contract": "contract-deployer ../contract .netlifyrc"
   },
   "repository": {
     "type": "git",
