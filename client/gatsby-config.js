@@ -1,6 +1,4 @@
-require("dotenv").config({
-  path: `.env`,
-});
+
 console.log("Contract ID", process.env.CONTRACT_ID);
 
 module.exports = {
