@@ -1,5 +1,0 @@
-[build]
-    environment = { 
-        WAVELET_API_URL = "https://f6d17235.ngrok.io"
-        CONTRACT_ID = "{{CONTRACT_ID}}"
-    }

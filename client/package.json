@@ -60,8 +60,8 @@
     "start": "npm run develop",
     "serve": "gatsby serve",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\"",
-    "deploy": "npm run deploy:contract && npm run build",
-    "deploy:contract": "contract-deployer --remote=http://ec2-18-207-218-134.compute-1.amazonaws.com:3011 --repo=claudiucelfilip/reveal.git --cargoPath=contract --outputTemplate=netlify.toml.template"
+    "deploy": "npm run deploy:contract",
+    "deploy:contract": "contract-deployer --postDeploy=\"npm run build\" --remote=http://ec2-18-207-218-134.compute-1.amazonaws.com:3011 --repo=claudiucelfilip/reveal.git --cargoPath=contract"
   },
   "repository": {
     "type": "git",
