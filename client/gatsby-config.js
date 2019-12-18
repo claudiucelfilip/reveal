@@ -1,7 +1,5 @@
-require("dotenv").config({
-  path: `.env`,
-});
 
+console.log("Contract ID", process.env.CONTRACT_ID);
 
 module.exports = {
   siteMetadata: {
@@ -45,7 +43,7 @@ module.exports = {
       resolve: "gatsby-source-reveal",
       options: {
         api_host: process.env.WAVELET_API_URL || 'https://devnet.perlin.net',
-          contract_id: '8b5352def100815d24dc1cefdc05943c291fd1a94a77b59f0e3841cff0f1329e' // process.env.CONTRACT_ID ||
+          contract_id: process.env.CONTRACT_ID || '8b5352def100815d24dc1cefdc05943c291fd1a94a77b59f0e3841cff0f1329e' // process.env.CONTRACT_ID ||
       },
     },
     {

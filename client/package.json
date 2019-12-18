@@ -10,6 +10,7 @@
     "bootstrap": "^4.3.1",
     "browser-monads": "^1.0.0",
     "child_process": "^1.0.2",
+    "contract-deployer": "https://github.com/claudiucelfilip/contract-deployer.git",
     "dompurify": "^1.0.11",
     "fs": "0.0.1-security",
     "gatsby": "^2.13.25",
@@ -58,7 +59,8 @@
     "format": "prettier --write src/**/*.{js,jsx}",
     "start": "npm run develop",
     "serve": "gatsby serve",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\""
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\"",
+    "deploy": "contract-deployer --postDeploy=\"npm run build\" --remote=http://ec2-18-207-218-134.compute-1.amazonaws.com:3011 --repo=claudiucelfilip/reveal.git --cargoPath=contract"
   },
   "repository": {
     "type": "git",
