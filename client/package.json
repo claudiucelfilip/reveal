@@ -10,7 +10,7 @@
     "bootstrap": "^4.3.1",
     "browser-monads": "^1.0.0",
     "child_process": "^1.0.2",
-    "dompurify": "^1.0.11",
+    "dompurify": "^2.0.17",
     "fs": "0.0.1-security",
     "gatsby": "^2.13.25",
     "gatsby-image": "^2.2.6",
